@@ -97,14 +97,15 @@ export const argsConfig = (
   }
   computed = computed
     .default(config)
-    .option("i", {
-      alias: "input",
+    .option("input", {
+      alias: "i",
       nargs: 1,
     })
-    .option("s", {
+    .option("multilineSep", {
       alias: "multisep",
+      alias: "s",
       nargs: 1,
-    });
+    })
   return computed.argv as unknown as Config;
 };
 
