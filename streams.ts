@@ -20,8 +20,9 @@ export function readInput(
 ): AsyncIterable<string> {
   let output: ReadInput | undefined = readable;
   if (output === "-") {
-    output = process?.stdin;
+    output = process?.stdin.setEncoding("utf8");
   }
+
   if (typeof output === "string") {
     // path
     output = createReadStream(output, "utf8");
@@ -50,6 +51,6 @@ export function itMap<I, O>(mapper: (i: I) => O) {
 /**
  * Helper which passes through a value
  */
-export function identityTransform<I>(source: I) {
+export function identity<I>(source: I) {
   return source;
 }
