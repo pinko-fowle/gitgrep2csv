@@ -1,6 +1,6 @@
-import { itMap } from "./streams.js"
+import { itMap } from "./streams.js";
 
-const newlines = /\r?\n/
+const newlines = /\r?\n/;
 
 /**
  * Process an async-iterator of strings, splitting it on newlines
@@ -18,8 +18,8 @@ export async function* lines(source: AsyncIterable<string>, split = newlines) {
 
     // add the last fragment to this line & yield
     buffer.push(frags[0]);
-    const complete = buffer.join("")
-    if (complete) yield complete
+    const complete = buffer.join("");
+    if (complete) yield complete;
 
     // any frags in the middle are complete lines
     for (let i = 1; i < frags.length - 1; ++i) {
@@ -33,14 +33,14 @@ export async function* lines(source: AsyncIterable<string>, split = newlines) {
 
   // return leftovers
   if (buffer.length > 0 && buffer[0] !== "") {
-    const tail = buffer.join("")
-    if (tail) yield tail
+    const tail = buffer.join("");
+    if (tail) yield tail;
   }
 }
 export default lines;
 
 export function tabsToSpacesTransform(m: string) {
-  return m.replaceAll("\t", "  ")
+  return m.replaceAll("\t", "  ");
 }
 
-export const tabsToSpaces = itMap(tabsToSpacesTransform)
+export const tabsToSpaces = itMap(tabsToSpacesTransform);

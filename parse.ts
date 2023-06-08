@@ -35,8 +35,6 @@ export function parse(c: Config) {
   }
 
   // TODO: flag to support non-line number results too
-  return itMap(
-    c.multilineSep ? parseMultiline : parseLineNumbered
-  ); //as (source: AsyncIterable<string | string[]>
+  return itMap(c.multilineSep ? parseMultiline : parseLineNumbered); //as (source: AsyncIterable<string | string[]>
 }
 export default parse;

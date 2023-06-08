@@ -22,9 +22,7 @@ export function mainProcess(p = process) {
 /**
  * Run from a config
  */
-export function main(
-  c: Config = config(process.argv, { process })
-) {
+export function main(c: Config = config(process.argv, { process })) {
   const input = readInput(c.input || "-", process);
   return pipe(
     input,
@@ -41,7 +39,7 @@ export default main;
 
 export async function print(source: AsyncIterable<any>) {
   for await (let item of source) {
-    console.log(item);
+    console.log({ item });
   }
 }
 

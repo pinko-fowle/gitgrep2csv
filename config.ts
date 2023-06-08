@@ -105,7 +105,7 @@ export const argsConfig = (
       alias: "multisep",
       alias: "s",
       nargs: 1,
-    })
+    });
   return computed.argv as unknown as Config;
 };
 

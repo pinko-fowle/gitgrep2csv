@@ -10,9 +10,9 @@ function writeCsv(m: Partial<Match>) {
     m.commitSha,
     m.commitDate,
     m.commitPr,
-    m.text
+    m.text,
   ];
-  return output.join("\t")
+  return output.join("\t");
 }
 export const csv = itMap(writeCsv);
 export default csv;

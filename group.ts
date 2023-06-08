@@ -6,7 +6,7 @@ import { identity } from "./streams.js";
  * Or pass through if no multilineSep configured
  */
 export function multilineGroup(c: Config) {
-  if (!c.multilineSep) return identity
+  if (!c.multilineSep) return identity;
 
   const isSepString = typeof c.multilineSep === "string";
   return async function* groupingTransform(lines: AsyncIterable<string>) {
