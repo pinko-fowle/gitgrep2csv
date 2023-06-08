@@ -34,3 +34,9 @@ export async function* lines(source: AsyncIterable<string>, split = newlines) {
   }
 }
 export default lines;
+
+export function tabsToSpacesTransform(m: string) {
+  return m.replaceAll("\t", "  ")
+}
+
+export const tabsToSpaces = itMap(tabsToSpacesTransform)

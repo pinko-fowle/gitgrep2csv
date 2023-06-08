@@ -6,7 +6,7 @@ import config, { processConfig } from "./config.js";
 import csv from "./csv.js";
 import { gitBlame, gitProject } from "./git.js";
 import group from "./group.js";
-import lines from "./lines.js";
+import { lines, tabsToSpaces } from "./lines.js";
 import parse from "./parse.js";
 import { readInput } from "./streams.js";
 import { Config, Match } from "./types.js";
@@ -24,10 +24,11 @@ export function mainProcess(p = process) {
  */
 export function main(
   c: Config = config(process.argv, { process })
-): AsyncIterable<Match> {
+) {
   const input = readInput(c.input || "-", process);
   return pipe(
     input,
+    tabsToSpaces,
     lines,
     group(c),
     parse(c) as (source: unknown) => AsyncIterable<Partial<Match>>,
