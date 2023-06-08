@@ -10,12 +10,16 @@ function parseLineNumbered(line: string | string[]): Partial<Match> {
     throw new Error("Expected string");
   }
 
-  const [matchedPath, lineStart, text] = line.split(":", 2);
-  return {
+  const [matchedPath, lineStart] = line.split(":", 2);
+  const text = line.substring(
+    matchedPath.length + lineStart?.toString().length + 2
+  );
+  const parsed = {
     matchedPath,
     lineStart: parseInt(lineStart),
     text,
   };
+  return parsed;
 }
 
 export function parse(c: Config) {
@@ -58,8 +62,8 @@ export function parse(c: Config) {
         const postPath = line.substring(shortest.length + 1);
         const num = Number.parseInt(postPath).toString();
         const text = line.substring(shortest.length + num.length + 2);
-        line = `${path}:${num}:${text}`;
-        return line;
+        const rejiggered = `${path}:${num}:${text}`;
+        return rejiggered;
       })
       // reparse
       .map(parseLineNumbered);
@@ -67,7 +71,6 @@ export function parse(c: Config) {
     // smoosh all the other lines into the first line
     const result = parsed[0];
     const last = parsed[parsed.length - 1];
-    console.log({ parsed, last });
     result.lineEnd = last.lineStart;
     result.text = parsed.reduce((acc, cur) => (acc += "\n" + cur.text), "");
     result.matches = shortest.matches;
