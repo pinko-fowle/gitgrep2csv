@@ -20,8 +20,9 @@ export function readInput(
 ): AsyncIterable<string> {
   let output: ReadInput | undefined = readable;
   if (output === "-") {
-    output = process?.stdin;
+    output = process?.stdin.setEncoding("utf8");
   }
+
   if (typeof output === "string") {
     // path
     output = createReadStream(output, "utf8");
