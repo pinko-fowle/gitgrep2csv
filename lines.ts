@@ -1,4 +1,6 @@
-const newlines = "[\r]\n";
+import { itMap } from "./streams.js"
+
+const newlines = /\r?\n/
 
 /**
  * Process an async-iterator of strings, splitting it on newlines
