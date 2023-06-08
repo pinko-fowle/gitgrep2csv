@@ -4,6 +4,7 @@ import { pipe } from "it-pipe";
 
 import config, { processConfig } from "./config.js";
 import csv from "./csv.js";
+import { gitBlame, gitProject } from "./git.js";
 import group from "./group.js";
 import lines from "./lines.js";
 import parse from "./parse.js";
@@ -30,8 +31,8 @@ export function main(
     lines,
     group(c),
     parse(c) as (source: unknown) => AsyncIterable<Partial<Match>>,
-    gitProject,
-    gitBlame,
+    //gitProject,
+    //gitBlame,
     csv
   );
 }
