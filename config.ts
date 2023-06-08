@@ -102,8 +102,7 @@ export const argsConfig = (
       nargs: 1,
     })
     .option("multilineSep", {
-      alias: "multisep",
-      alias: "s",
+      alias: ["multisep", "s"],
       nargs: 1,
     });
   return computed.argv as unknown as Config;
