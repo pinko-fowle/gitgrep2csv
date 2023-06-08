@@ -50,6 +50,6 @@ export function itMap<I, O>(mapper: (i: I) => O) {
 /**
  * Helper which passes through a value
  */
-export function identityTransform<I>(source: I) {
+export function identity<I>(source: I) {
   return source;
 }

@@ -1,12 +1,12 @@
 import type { Config, Match } from "./types.js";
-import { identityTransform } from "./streams.js";
+import { identity } from "./streams.js";
 
 /**
  * Batch lines together until a config.multilineSep appears
  * Or pass through if no multilineSep configured
  */
 export function multilineGroup(c: Config) {
-  if (!c.multilineSep) return identityTransform;
+  if (!c.multilineSep) return identity
 
   const isSepString = typeof c.multilineSep === "string";
   return async function* groupingTransform(lines: AsyncIterable<string>) {

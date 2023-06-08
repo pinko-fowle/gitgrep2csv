@@ -5,7 +5,7 @@ import type { Match } from "./types.js";
 /**
  * Parse a file:lineNumber:text line
  */
-function parseLineNumberedTransform(line: string | string[]): Partial<Match> {
+function parseLineNumbered(line: string | string[]): Partial<Match> {
   if (typeof line !== "string") {
     throw new Error("Expected string");
   }
@@ -19,13 +19,13 @@ function parseLineNumberedTransform(line: string | string[]): Partial<Match> {
 }
 
 export function parse(c: Config) {
-  function parseMultilineTransform(lines: string | string[]): Partial<Match> {
+  function parseMultiline(lines: string | string[]): Partial<Match> {
     if (typeof lines === "string") {
       throw new Error("Expected strings[]");
     }
 
     // parse each line individually
-    const parsed = lines.map(parseLineNumberedTransform);
+    const parsed = lines.map(parseLineNumbered);
 
     // smoosh all the other lines into the first line
     const line = parsed[0];
@@ -36,7 +36,7 @@ export function parse(c: Config) {
 
   // TODO: flag to support non-line number results too
   return itMap(
-    c.multilineSep ? parseMultilineTransform : parseLineNumberedTransform
+    c.multilineSep ? parseMultiline : parseLineNumbered
   ); //as (source: AsyncIterable<string | string[]>
 }
 export default parse;
