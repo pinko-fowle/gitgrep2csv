@@ -18,12 +18,13 @@ export async function* lines(source: AsyncIterable<string>, split = newlines) {
 
     // add the last fragment to this line & yield
     buffer.push(frags[0]);
-    yield buffer.join("");
+    const complete = buffer.join("")
+    if (complete) yield complete
 
     // any frags in the middle are complete lines
     for (let i = 1; i < frags.length - 1; ++i) {
       // yield them
-      yield frags[i];
+      if (frags[i]) yield frags[i];
     }
 
     // the last fragment still needs a newline
@@ -32,7 +33,8 @@ export async function* lines(source: AsyncIterable<string>, split = newlines) {
 
   // return leftovers
   if (buffer.length > 0 && buffer[0] !== "") {
-    yield buffer.join("");
+    const tail = buffer.join("")
+    if (tail) yield tail
   }
 }
 export default lines;
