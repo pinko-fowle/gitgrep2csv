@@ -1,5 +1,5 @@
 export interface Match {
-  fullpath: string;
+  matchedPath: string;
   text: string;
   project: string;
   path: string;

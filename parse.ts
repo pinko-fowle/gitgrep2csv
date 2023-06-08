@@ -10,9 +10,9 @@ function parseLineNumbered(line: string | string[]): Partial<Match> {
     throw new Error("Expected string");
   }
 
-  const [fullpath, lineStart, text] = line.split(":");
+  const [matchedPath, lineStart, text] = line.split(":");
   return {
-    fullpath,
+    matchedPath,
     lineStart: parseInt(lineStart),
     text,
   };
