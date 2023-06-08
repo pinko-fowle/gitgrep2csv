@@ -10,6 +10,7 @@ function writeCsv(m: Partial<Match>) {
     m.commitSha,
     m.commitDate,
     m.commitPr,
+    m.text
   ];
   return output.join("\t")
 }
