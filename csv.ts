@@ -1,7 +1,7 @@
 import { itMap } from "./streams.js";
-import { Match } from "./types.js";
+import { Config, Match } from "./types.js";
 
-function writeCsv(m: Partial<Match>) {
+const writeCsv = (c: Config) => (m: Partial<Match>) => {
   let output = [
     m.project,
     m.path,
@@ -12,7 +12,7 @@ function writeCsv(m: Partial<Match>) {
     m.pr,
     m.text,
   ];
-  return output.join("\t");
+  return output.join();
 }
-export const csv = itMap(writeCsv);
+export const csv = (c: Config) => itMap(writeCsv(c));
 export default csv;

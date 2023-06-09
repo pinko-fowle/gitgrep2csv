@@ -33,7 +33,7 @@ export function main(c: Config = config(process.argv, { process })) {
     gitProject,
     gitBlame,
     githubPr,
-    csv
+    csv(c)
   );
 }
 export default main;
