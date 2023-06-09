@@ -108,7 +108,7 @@ const mergeFormat = [
 async function githubPrMatch(m: Partial<Match>): Promise<Partial<Match>> {
   const cwd = process.cwd() + path.sep + path.dirname(m.matchedPath || "");
   const mergeLog = await execa(
-    `git log --merges --format=tpretty:'${mergeFormat}' --ancestry-path ${m.blame?.rev}..main | grep 'pull request' | head -n1`,
+    `git log --merges --format='${mergeFormat}' --ancestry-path ${m.blame?.rev}..main | grep 'pull request' | head -n1`,
     { cwd, shell: true }
   );
   const [

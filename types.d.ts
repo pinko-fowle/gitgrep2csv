@@ -12,7 +12,6 @@ export interface Match {
   lineEnd: number;
   blame?: GitBlame;
   merge?: GitMerge;
-  pr: string;
 
   // not displayed
   matches?: number[]; // unused for now
