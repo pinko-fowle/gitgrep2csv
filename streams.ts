@@ -40,7 +40,7 @@ export function readInput(
 /**
  * Create an async generator on an input iterable which will transform each value with a `mapper` function.
  */
-export function itMap<I, O>(mapper: (i: I) => O) {
+export function itMap<I, O>(mapper: (i: I) => Promise<O> | O) {
   return async function* itMapper(source: AsyncIterable<I>): AsyncIterable<O> {
     for await (let val of source) {
       yield mapper(val);
