@@ -11,6 +11,8 @@ export interface Match {
   lineStart: number;
   lineEnd: number;
   blame?: GitBlame;
+  merge?: GitMerge;
+  pr: string;
 
   // not displayed
   matches?: number[]; // unused for now
@@ -34,16 +36,22 @@ export interface Config {
  */
 export interface GitBlame {
   rev: string;
-  lineNum: number;
-  lineNumNew: number;
-  subsequent: number;
+  lineNum?: number; // blame only
+  lineNumNew?: number; // blame only
+  subsequent?: number; // blame only
   author: string;
-  authorMail: string;
+  authorEmail: string;
   authorTime: Date;
-  authorTz: number;
+  authorTz?: number; // blame only
   committer: string;
-  committerMail: string;
+  committerEmail: string;
   committerTime: Date;
-  committerTz: number;
+  committerTz?: number; // blame only
   summary: string;
+}
+
+export interface GitMerge extends GitBlame {
+  parent: string[]; // merge commit
+  pr?: number;
+  branch?: string;
 }

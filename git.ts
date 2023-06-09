@@ -93,5 +93,54 @@ async function gitBlameMatch(m: Partial<Match>): Promise<Partial<Match>> {
   return m;
 }
 
+const mergeFormat = [
+  "%H", // commit hash/rev
+  "%aN", // author name
+  "%ae", // author email
+  "%at", // author date timestamp
+  "%cN", // committer name
+  "%ce", // committer email
+  "%ct", // commiter date timestamp
+  "%P", // parent hashes
+  "%s", // summary
+].join("\t");
+
+async function githubPrMatch(m: Partial<Match>): Promise<Partial<Match>> {
+  const cwd = process.cwd() + path.sep + path.dirname(m.matchedPath || "");
+  const mergeLog = await execa(
+    `git log --merges --format=tpretty:'${mergeFormat}' --ancestry-path ${m.blame?.rev}..main | grep 'pull request' | head -n1`,
+    { cwd, shell: true }
+  );
+  const [
+    rev,
+    author,
+    authorEmail,
+    authorTime,
+    committer,
+    committerEmail,
+    committerTime,
+    parent,
+    summary,
+  ] = mergeLog.stdout.trim().split("\t");
+
+  const pr = /pull request #(\d+)/.exec(summary);
+  const branch = /from (.*)/.exec(summary);
+  m.merge = {
+    rev,
+    author,
+    authorEmail,
+    authorTime: new Date(Number.parseInt(authorTime)),
+    committer,
+    committerEmail,
+    committerTime: new Date(Number.parseInt(authorTime)),
+    summary,
+    parent: parent.split(" "),
+    pr: Number.parseInt(pr?.[1] || "-1"),
+    branch: branch?.[1],
+  };
+  return m;
+}
+
 export const gitProject = itMap(gitProjectMatch);
 export const gitBlame = itMap(gitBlameMatch);
+export const githubPr = itMap(githubPrMatch);

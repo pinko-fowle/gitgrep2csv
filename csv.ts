@@ -7,9 +7,9 @@ function writeCsv(m: Partial<Match>) {
     m.path,
     m.lineStart,
     m.lineEnd,
-    m.blame?.rev || "",
-    Math.floor(m.blame?.authorTime.getTime() / 1000) || "",
-    m.commitPr,
+    m.blame?.rev,
+    Math.floor(m.blame?.authorTime?.getTime() || 0 / 1000),
+    m.pr,
     m.text,
   ];
   return output.join("\t");
