@@ -13,6 +13,6 @@ const writeCsv = (c: Config) => (m: Partial<Match>) => {
     m.text,
   ];
   return output.join();
-}
+};
 export const csv = (c: Config) => itMap(writeCsv(c));
 export default csv;
