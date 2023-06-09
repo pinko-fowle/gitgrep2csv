@@ -31,7 +31,7 @@ export function main(c: Config = config(process.argv, { process })) {
     group(c),
     parse(c) as (source: unknown) => AsyncIterable<Partial<Match>>,
     gitProject,
-    //gitBlame,
+    gitBlame,
     csv
   );
 }

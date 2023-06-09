@@ -7,8 +7,8 @@ function writeCsv(m: Partial<Match>) {
     m.path,
     m.lineStart,
     m.lineEnd,
-    m.commitSha,
-    m.commitDate,
+    m.blame?.rev || "",
+    Math.floor(m.blame?.authorTime.getTime() / 1000) || "",
     m.commitPr,
     m.text,
   ];
