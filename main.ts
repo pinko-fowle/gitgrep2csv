@@ -4,7 +4,7 @@ import { pipe } from "it-pipe";
 
 import config, { processConfig } from "./config.js";
 import csv from "./csv.js";
-import { gitBlame, gitProject } from "./git.js";
+import { gitBlame, gitProject, githubPr } from "./git.js";
 import group from "./group.js";
 import { lines, tabsToSpaces } from "./lines.js";
 import parse from "./parse.js";
@@ -32,6 +32,7 @@ export function main(c: Config = config(process.argv, { process })) {
     parse(c) as (source: unknown) => AsyncIterable<Partial<Match>>,
     gitProject,
     gitBlame,
+    githubPr,
     csv
   );
 }
