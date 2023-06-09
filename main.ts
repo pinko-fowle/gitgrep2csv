@@ -40,7 +40,7 @@ export default main;
 
 export async function print(source: AsyncIterable<any>) {
   for await (let item of source) {
-    console.log({ item });
+    console.log(item?.replaceAll(/\r?\n/g, "\\n"));
   }
 }
 
