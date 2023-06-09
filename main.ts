@@ -3,7 +3,7 @@ import isMain from "is-main";
 import { pipe } from "it-pipe";
 
 import config, { processConfig } from "./config.js";
-import csv from "./csv.js";
+import { csv, csvHeaders } from "./csv.js";
 import { gitBlame, gitProject, githubPr } from "./git.js";
 import group from "./group.js";
 import { lines, tabsToSpaces } from "./lines.js";
@@ -39,6 +39,7 @@ export function main(c: Config = config(process.argv, { process })) {
 export default main;
 
 export async function print(source: AsyncIterable<any>) {
+  console.log(csvHeaders.join("\t")); // womp womp no config#sep
   for await (let item of source) {
     console.log(item?.replaceAll(/\r?\n/g, "\\n"));
   }

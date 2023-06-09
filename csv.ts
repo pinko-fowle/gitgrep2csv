@@ -5,6 +5,20 @@ function toEpoch(d?: Date) {
   return Math.floor(d?.getTime() || 0 / 1000);
 }
 
+export const csvHeaders = [
+  "project",
+  "path",
+  "line",
+  "lineEnd",
+  "rev",
+  "date",
+  "mergeRev",
+  "mergeDate",
+  "pr",
+  "branch",
+  "text",
+];
+
 const writeCsv = (c: Config) => (m: Partial<Match>) => {
   let output = [
     m.project,
