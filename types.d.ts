@@ -28,6 +28,7 @@ export interface Config {
   input?: ReadInput;
   loadDotEnv?: boolean | Function;
   multilineSep?: string | RegExp | null;
+  sep: string;
   process?: Process;
 }
 

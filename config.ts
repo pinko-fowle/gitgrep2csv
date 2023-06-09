@@ -27,6 +27,10 @@ export let loadDotEnv: boolean | Function = () => loadDotEnvOnce;
  * Seperator for multi-line code blocks
  */
 export let multilineSep: string = "";
+/**
+ * Separator for output csv
+ */
+export let sep = "\t";
 
 /**
  * Populate a Config with defaults.
@@ -35,6 +39,7 @@ export const defaults = (base?: Partial<Config>): Config => ({
   appName,
   appEnv: (base?.appName || appName).toLowerCase(),
   input,
+  sep,
   multilineSep,
   ...base,
 });
@@ -99,10 +104,17 @@ export const argsConfig = (
     .default(config)
     .option("input", {
       alias: "i",
+      description: "input file, or - for stdin",
       nargs: 1,
     })
     .option("multilineSep", {
       alias: ["multisep", "s"],
+      description: "optional multiline separator used in input",
+      nargs: 1,
+    })
+    .option("sep", {
+      alias: "S",
+      description: "csv output separator",
       nargs: 1,
     });
   return computed.argv as unknown as Config;
