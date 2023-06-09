@@ -10,12 +10,13 @@ export interface Match {
   path: string;
   lineStart: number;
   lineEnd: number;
-  commitSha: string;
-  commitDate: string;
-  commitPr: string;
+  blame?: GitBlame;
+  merge?: GitMerge;
+  pr: string;
 
-  // unused
-  matches: number[];
+  // not displayed
+  matches?: number[]; // unused for now
+  rootDir: string; // directory for project
 }
 
 /**
@@ -28,4 +29,29 @@ export interface Config {
   loadDotEnv?: boolean | Function;
   multilineSep?: string | RegExp | null;
   process?: Process;
+}
+
+/**
+ * A single line parsed git blame
+ */
+export interface GitBlame {
+  rev: string;
+  lineNum?: number; // blame only
+  lineNumNew?: number; // blame only
+  subsequent?: number; // blame only
+  author: string;
+  authorEmail: string;
+  authorTime: Date;
+  authorTz?: number; // blame only
+  committer: string;
+  committerEmail: string;
+  committerTime: Date;
+  committerTz?: number; // blame only
+  summary: string;
+}
+
+export interface GitMerge extends GitBlame {
+  parent: string[]; // merge commit
+  pr?: number;
+  branch?: string;
 }
