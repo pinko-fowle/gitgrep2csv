@@ -7,7 +7,7 @@ import { csv, csvHeaders } from "./csv.js";
 import { gitBlame, gitProject, githubPr } from "./git.js";
 import group from "./group.js";
 import { lines, tabsToSpaces } from "./lines.js";
-import parse from "./parse.js";
+import { parse, parseSemgrep } from "./parse.js";
 import { readInput } from "./streams.js";
 import { Config, Match } from "./types.js";
 
@@ -23,6 +23,11 @@ export function mainProcess(p = process) {
  * Run from a config
  */
 export function main(c: Config = config(process.argv, { process })) {
+  return c.semgrep ? semgrepMain(c) : grepMain(c);
+}
+export default main;
+
+export function grepMain(c: Config = config(process.argv, { process })) {
   const input = readInput(c.input || "-", process);
   return pipe(
     input,
@@ -36,7 +41,19 @@ export function main(c: Config = config(process.argv, { process })) {
     csv(c)
   );
 }
-export default main;
+
+export function semgrepMain(c: Config = config(process.argv, { process })) {
+  const input = readInput(c.input || "-", process);
+  return pipe(
+    input,
+    tabsToSpaces,
+    parseSemgrep,
+    gitProject,
+    gitBlame,
+    githubPr,
+    csv(c)
+  );
+}
 
 export async function print(source: AsyncIterable<any>) {
   console.log(csvHeaders.join("\t")); // womp womp no config#sep
