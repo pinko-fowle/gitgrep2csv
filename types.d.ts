@@ -12,6 +12,7 @@ export interface Match {
   lineEnd: number;
   blame?: GitBlame;
   merge?: GitMerge;
+  vars?: Record<string, string>; // semgrep can capture variables for us
 
   // not displayed
   matches?: number[]; // unused for now
@@ -27,6 +28,7 @@ export interface Config {
   input?: ReadInput;
   loadDotEnv?: boolean | Function;
   multilineSep?: string | RegExp | null;
+  semgrep: boolean;
   sep: string;
   process?: Process;
 }
@@ -36,8 +38,8 @@ export interface Config {
  */
 export interface GitBlame {
   rev: string;
-  lineNum?: number; // blame only
-  lineNumNew?: number; // blame only
+  //lineNum?: number; // blame only
+  //lineNumNew?: number; // blame only
   subsequent?: number; // blame only
   author: string;
   authorEmail: string;
