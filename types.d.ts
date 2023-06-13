@@ -38,8 +38,8 @@ export interface Config {
  */
 export interface GitBlame {
   rev: string;
-  lineNum?: number; // blame only
-  lineNumNew?: number; // blame only
+  //lineNum?: number; // blame only
+  //lineNumNew?: number; // blame only
   subsequent?: number; // blame only
   author: string;
   authorEmail: string;
