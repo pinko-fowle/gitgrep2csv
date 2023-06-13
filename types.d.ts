@@ -12,6 +12,7 @@ export interface Match {
   lineEnd: number;
   blame?: GitBlame;
   merge?: GitMerge;
+  vars?: Record<string, string>; // semgrep can capture variables for us
 
   // not displayed
   matches?: number[]; // unused for now

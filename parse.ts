@@ -81,3 +81,43 @@ export function parse(c: Config) {
   return itMap(c.multilineSep ? parseMultiline : parseLineNumbered); //as (source: AsyncIterable<string | string[]>
 }
 export default parse;
+
+/**
+ * Parse semgrep json input lines
+ */
+export async function parseSemgrepMatch(
+  semgrep: Record<string, any>
+): Promise<Partial<Match>> {
+  const vars = Object.entries(semgrep.extra.metavars || {}).reduce(
+    (mv, [key, val]) => {
+      mv[key] = (val as any).abstract_content;
+      return mv;
+    },
+    {} as Record<string, string>
+  );
+  return {
+    lineStart: semgrep.start.line,
+    lineEnd: semgrep.end.line,
+    text: semgrep.extra.lines,
+    matchedPath: semgrep.path,
+    vars,
+  };
+}
+
+/**
+ */
+export async function* parseSemgrep(source: AsyncIterable<string>) {
+  // read all strings
+  const buffer = [];
+  for await (let str of source) {
+    buffer.push(str);
+  }
+
+  // combine to json
+  const semgrep = JSON.parse(buffer.join(""));
+  console.log(semgrep);
+  // read out results
+  for await (let result of semgrep.results) {
+    yield parseSemgrepMatch(result);
+  }
+}
