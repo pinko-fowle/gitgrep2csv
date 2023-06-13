@@ -27,6 +27,7 @@ export interface Config {
   input?: ReadInput;
   loadDotEnv?: boolean | Function;
   multilineSep?: string | RegExp | null;
+  semgrep: boolean;
   sep: string;
   process?: Process;
 }

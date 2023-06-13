@@ -28,6 +28,10 @@ export let loadDotEnv: boolean | Function = () => loadDotEnvOnce;
  */
 export let multilineSep: string = "";
 /**
+ * Expect semgrep json input
+ */
+export let semgrep = false;
+/**
  * Separator for output csv
  */
 export let sep = "\t";
@@ -41,6 +45,7 @@ export const defaults = (base?: Partial<Config>): Config => ({
   input,
   sep,
   multilineSep,
+  semgrep,
   ...base,
 });
 
@@ -108,7 +113,7 @@ export const argsConfig = (
       nargs: 1,
     })
     .option("multilineSep", {
-      alias: ["multisep", "s"],
+      alias: ["multisep", "m"],
       description: "optional multiline separator used in input",
       nargs: 1,
     })
@@ -116,6 +121,10 @@ export const argsConfig = (
       alias: "S",
       description: "csv output separator",
       nargs: 1,
+    })
+    .option("semgrep", {
+      description: "expect semgrep json input",
+      boolean: true,
     });
   return computed.argv as unknown as Config;
 };
