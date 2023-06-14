@@ -63,17 +63,33 @@ async function parseGitBlame(lines: string[]) {
   return output;
 }
 
+const ignorePaths = new Map<string, boolean>()
+
 async function gitBlameMatch(m: Partial<Match>): Promise<Partial<Match>> {
   if (!m?.path || !m?.rootDir) {
     return m;
   }
 
-  const ignorePath = path.resolve(m.rootDir, ".git-blame-ignore-revs");
+  let ignorePath: string | undefined;
+  let hasIgnore = ignorePaths.get(m.rootDir)
   let ignore: string[] = [];
-  try {
-    await fs.stat(ignorePath);
+  if (hasIgnore === undefined) {
+    ignorePath = path.resolve(m.rootDir, ".git-blame-ignore-revs");
+    let ignore: string[] = [];
+    try {
+      await fs.stat(ignorePath);
+      hasIgnore = true;
+      ignorePaths.set(m.rootDir, true);
+    } catch {
+      ignorePaths.set(m.rootDir, false);
+    }
+  }
+  if (hasIgnore) {
+    if (!ignorePath) {
+      ignorePath = path.resolve(m.rootDir, ".git-blame-ignore-revs");
+    }
     ignore = ["--ignore-revs-file", ignorePath];
-  } catch {}
+  }
 
   const line = (m.matches?.[0] || 0) + 1;
   const blameLines = await execa(
