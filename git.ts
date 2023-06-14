@@ -3,7 +3,7 @@ import * as fs from "node:fs/promises";
 import { camelCase } from "camel-case";
 import { execa } from "execa";
 import { itMap } from "./streams.js";
-import { GitBlame, Match } from "./types.js";
+import { Config, GitBlame, Match } from "./types.js";
 
 /**
  * Find the root of the project, and path of the file inside the project
@@ -140,6 +140,37 @@ async function githubPrMatch(m: Partial<Match>): Promise<Match> {
   };
   return m as Match;
 }
+
+/**
+ * Attach the sha of main branch
+ */
+export const gitHead = () => {
+  const projectHeads = new Map<string, string>();
+
+  return async function* gitHead(source: AsyncIterable<Partial<Match>>) {
+    for await (let m of source) {
+      let project = m.project;
+      if (project === undefined) {
+        yield m;
+        continue;
+      }
+
+      // see if we already have a cached
+      let head: string | undefined = projectHeads.get(project);
+      if (!head) {
+        try {
+          head = (await execa("git", ["rev-parse", "HEAD"], { cwd: m.rootDir }))
+            .stdout;
+          console.log({ head, proj: m.rootDir });
+
+          projectHeads.set(project, head);
+        } catch {}
+      }
+      m.head = head;
+      yield m;
+    }
+  };
+};
 
 export const gitProject = itMap(gitProjectMatch);
 export const gitBlame = itMap(gitBlameMatch);

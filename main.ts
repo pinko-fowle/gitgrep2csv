@@ -4,7 +4,7 @@ import { pipe } from "it-pipe";
 
 import config, { processConfig } from "./config.js";
 import { csv, csvHeaders } from "./csv.js";
-import { gitBlame, gitProject, githubPr } from "./git.js";
+import { gitBlame, gitHead, gitProject, githubPr } from "./git.js";
 import group from "./group.js";
 import { lines, tabsToSpaces } from "./lines.js";
 import { parse, parseSemgrep } from "./parse.js";
@@ -37,6 +37,7 @@ export function grepMain(c: Config = config(process.argv, { process })) {
     parse(c) as (source: unknown) => AsyncIterable<Partial<Match>>,
     gitProject,
     gitBlame,
+    gitHead(),
     githubPr,
     csv(c),
     csvHeaders(c),
@@ -52,6 +53,7 @@ export function semgrepMain(c: Config = config(process.argv, { process })) {
     parseSemgrep,
     gitProject,
     gitBlame,
+    gitHead(),
     githubPr,
     csv(c),
     csvHeaders(c),

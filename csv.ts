@@ -42,6 +42,9 @@ const writeCsv = (c: Config) => (m: Match) => {
     toEpoch(m.merge?.authorTime),
     m.merge?.pr,
     m.merge?.branch,
+    `[\`${m.path}\`](https://github.com/socialtables/${m.project}/blob/${m.head}${m.path}`,
+    m.merge &&
+      `[\`#${m.merge?.pr}\`](https://github.com/socialtables/pulls/${m.merge?.pr})`,
     m.text,
   ];
   return output.join(c.sep);
