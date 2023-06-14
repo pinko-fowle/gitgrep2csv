@@ -64,32 +64,37 @@ async function parseGitBlame(lines: string[]) {
 }
 
 const ignorePaths = new Map<string, boolean>()
+async function ignoreArgs(rootDir: string) {
+  let ignorePath: string | undefined;
+  let hasIgnore = ignorePaths.get(rootDir)
+
+  if (hasIgnore === undefined) {
+    ignorePath = path.resolve(rootDir, ".git-blame-ignore-revs");
+    let ignore: string[] = [];
+    try {
+      await fs.stat(ignorePath);
+      hasIgnore = true;
+      ignorePaths.set(rootDir, true);
+    } catch {
+      ignorePaths.set(rootDir, false);
+    }
+  }
+
+  if (hasIgnore) {
+    if (!ignorePath) {
+      ignorePath = path.resolve(rootDir, ".git-blame-ignore-revs");
+    }
+    return ["--ignore-revs-file", ignorePath];
+  }
+}
+
 
 async function gitBlameMatch(m: Partial<Match>): Promise<Partial<Match>> {
   if (!m?.path || !m?.rootDir) {
     return m;
   }
 
-  let ignorePath: string | undefined;
-  let hasIgnore = ignorePaths.get(m.rootDir)
-  let ignore: string[] = [];
-  if (hasIgnore === undefined) {
-    ignorePath = path.resolve(m.rootDir, ".git-blame-ignore-revs");
-    let ignore: string[] = [];
-    try {
-      await fs.stat(ignorePath);
-      hasIgnore = true;
-      ignorePaths.set(m.rootDir, true);
-    } catch {
-      ignorePaths.set(m.rootDir, false);
-    }
-  }
-  if (hasIgnore) {
-    if (!ignorePath) {
-      ignorePath = path.resolve(m.rootDir, ".git-blame-ignore-revs");
-    }
-    ignore = ["--ignore-revs-file", ignorePath];
-  }
+  const ignore = await ignoreArgs(m.rootDir) || [];
 
   const line = (m.matches?.[0] || 0) + 1;
   const blameLines = await execa(
