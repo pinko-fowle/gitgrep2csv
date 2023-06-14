@@ -10,8 +10,8 @@ export interface Match {
   path: string;
   lineStart: number;
   lineEnd: number;
-  commits?: GitCommits;
-  merge?: GitMerge;
+  commits?: Record<string, GitBlame>; // rev->blame
+  merges?: Record<string, GitMerge>; // rev->merge
   vars?: Record<string, string>; // semgrep can capture variables for us
   head: string; // rev that head is on
 
@@ -52,8 +52,6 @@ export interface GitBlame {
   summary: string;
   lines?: number[]; // blame only
 }
-
-export type GitCommits = Record<string,GitBlame>;
 
 export interface GitMerge extends GitBlame {
   parent: string[]; // merge commit

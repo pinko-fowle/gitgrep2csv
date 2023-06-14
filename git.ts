@@ -79,7 +79,8 @@ async function parseGitBlame(
         let value: any = info.substring(infoSplit[0].length + 1);
         const numberify = Number.parseInt(value);
         if (numberify) value = numberify;
-        if (numberify && key.endsWith("Time")) value = new Date(numberify);
+        if (numberify && key.endsWith("Time"))
+          value = new Date(numberify * 1000);
 
         (blame as any)[key] = value;
       }
@@ -95,13 +96,18 @@ async function parseGitBlame(
       blame.lines?.push(i);
     }
   }
+
   return commits;
 }
 
-const ignorePaths = new Map<string, boolean>()
+const ignorePaths = new Map<string, boolean>();
+
+/**
+ * Gather git --ignore-revs-file information
+ */
 async function ignoreArgs(rootDir: string) {
   let ignorePath: string | undefined;
-  let hasIgnore = ignorePaths.get(rootDir)
+  let hasIgnore = ignorePaths.get(rootDir);
 
   if (hasIgnore === undefined) {
     ignorePath = path.resolve(rootDir, ".git-blame-ignore-revs");
@@ -131,19 +137,17 @@ async function gitBlameMatch(m: Partial<Match>): Promise<Partial<Match>> {
     return m;
   }
 
-  const ignore = await ignoreArgs(m.rootDir) || [];
-  const blameLines = await execa(
-    "git",
-    [
-      "blame",
-      "--porcelain", // machine output
-      "-L",
-      `${m.lineStart},${m.lineEnd}`, // a specific line number
-      ...ignore,
-      m.path.substring(1),
-    ],
-    { cwd: m.rootDir }
-  );
+  const ignore = (await ignoreArgs(m.rootDir)) || [];
+  const args = [
+    "blame",
+    "--porcelain", // machine output
+    "-L",
+    `${m.lineStart},${m.lineEnd}`, // a specific line number
+    ...ignore,
+    m.path.substring(1),
+  ];
+
+  const blameLines = await execa("git", args, { cwd: m.rootDir });
 
   m.commits = await parseGitBlame(blameLines.stdout.split(/\r?\n/));
   return m;
@@ -163,10 +167,8 @@ const mergeFormat = [
 
 async function githubPrMatch(m: Partial<Match>): Promise<Match> {
   const cwd = process.cwd() + path.sep + path.dirname(m.matchedPath || "");
-  const mergeLog = await execa(
-    `git log --merges --format='${mergeFormat}' --ancestry-path ${m.blame?.rev}..main | grep 'pull request' | head -n1`,
-    { cwd, shell: true }
-  );
+  const cmd = `git log --merges --format='${mergeFormat}' --ancestry-path ${commit}..main | grep 'pull request' | head -n1`;
+  const mergeLog = await execa(cmd, { cwd, shell: true });
   const [
     rev,
     author,
@@ -185,12 +187,12 @@ async function githubPrMatch(m: Partial<Match>): Promise<Match> {
     rev,
     author,
     authorEmail,
-    authorTime: new Date(Number.parseInt(authorTime)),
+    authorTime: new Date(Number.parseInt(authorTime) * 1000),
     committer,
     committerEmail,
-    committerTime: new Date(Number.parseInt(authorTime)),
+    committerTime: new Date(Number.parseInt(committerTime) * 1000),
     summary,
-    parent: parent.split(" "),
+    parent: parent?.split(" "),
     pr: Number.parseInt(pr?.[1] || "-1"),
     branch: branch?.[1],
   };
@@ -217,7 +219,6 @@ export const gitHead = () => {
         try {
           head = (await execa("git", ["rev-parse", "HEAD"], { cwd: m.rootDir }))
             .stdout;
-          console.log({ head, proj: m.rootDir });
 
           projectHeads.set(project, head);
         } catch {}
