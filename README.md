@@ -47,6 +47,7 @@
 - [Interface: Match](#interface-match)
   - [Properties](#properties-3)
     - [blame](#blame)
+    - [head](#head)
     - [lineEnd](#lineend)
     - [lineStart](#linestart)
     - [matchedPath](#matchedpath)
@@ -61,7 +62,7 @@
   - [Interfaces](#interfaces)
   - [Variables](#variables)
     - [appName](#appname-1)
-    - [csvHeaders](#csvheaders)
+    - [csvHeaderTitles](#csvheadertitles)
     - [helper](#helper)
     - [initialDefaults](#initialdefaults)
     - [input](#input-1)
@@ -72,8 +73,10 @@
   - [Functions](#functions)
     - [argsConfig](#argsconfig)
     - [csv](#csv)
+    - [csvHeaders](#csvheaders)
     - [defaults](#defaults)
     - [gitBlame](#gitblame)
+    - [gitHead](#githead)
     - [gitProject](#gitproject)
     - [githubPr](#githubpr)
     - [lines](#lines)
@@ -115,7 +118,7 @@ Configuration for a run
 
 #### Defined in
 
-[types.d.ts:27](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L27)
+[types.d.ts:28](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L28)
 
 ---
 
@@ -125,7 +128,7 @@ Configuration for a run
 
 #### Defined in
 
-[types.d.ts:26](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L26)
+[types.d.ts:27](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L27)
 
 ---
 
@@ -135,7 +138,7 @@ Configuration for a run
 
 #### Defined in
 
-[types.d.ts:28](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L28)
+[types.d.ts:29](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L29)
 
 ---
 
@@ -145,7 +148,7 @@ Configuration for a run
 
 #### Defined in
 
-[types.d.ts:29](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L29)
+[types.d.ts:30](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L30)
 
 ---
 
@@ -155,7 +158,7 @@ Configuration for a run
 
 #### Defined in
 
-[types.d.ts:30](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L30)
+[types.d.ts:31](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L31)
 
 ---
 
@@ -165,7 +168,7 @@ Configuration for a run
 
 #### Defined in
 
-[types.d.ts:33](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L33)
+[types.d.ts:34](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L34)
 
 ---
 
@@ -175,7 +178,7 @@ Configuration for a run
 
 #### Defined in
 
-[types.d.ts:31](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L31)
+[types.d.ts:32](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L32)
 
 ---
 
@@ -185,7 +188,7 @@ Configuration for a run
 
 #### Defined in
 
-[types.d.ts:32](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L32)
+[types.d.ts:33](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L33)
 
 <a name="interfacesgitblamemd"></a>
 
@@ -207,7 +210,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:44](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L44)
+[types.d.ts:45](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L45)
 
 ---
 
@@ -217,7 +220,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:45](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L45)
+[types.d.ts:46](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L46)
 
 ---
 
@@ -227,7 +230,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:46](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L46)
+[types.d.ts:47](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L47)
 
 ---
 
@@ -237,7 +240,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:47](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L47)
+[types.d.ts:48](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L48)
 
 ---
 
@@ -247,7 +250,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:48](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L48)
+[types.d.ts:49](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L49)
 
 ---
 
@@ -257,7 +260,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:49](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L49)
+[types.d.ts:50](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L50)
 
 ---
 
@@ -267,7 +270,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:50](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L50)
+[types.d.ts:51](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L51)
 
 ---
 
@@ -277,7 +280,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:51](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L51)
+[types.d.ts:52](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L52)
 
 ---
 
@@ -287,7 +290,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:40](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L40)
+[types.d.ts:41](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L41)
 
 ---
 
@@ -297,7 +300,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:43](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L43)
+[types.d.ts:44](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L44)
 
 ---
 
@@ -307,7 +310,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:52](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L52)
+[types.d.ts:53](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L53)
 
 <a name="interfacesgitmergemd"></a>
 
@@ -333,7 +336,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:44](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L44)
+[types.d.ts:45](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L45)
 
 ---
 
@@ -347,7 +350,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:45](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L45)
+[types.d.ts:46](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L46)
 
 ---
 
@@ -361,7 +364,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:46](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L46)
+[types.d.ts:47](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L47)
 
 ---
 
@@ -375,7 +378,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:47](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L47)
+[types.d.ts:48](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L48)
 
 ---
 
@@ -385,7 +388,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:58](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L58)
+[types.d.ts:59](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L59)
 
 ---
 
@@ -399,7 +402,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:48](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L48)
+[types.d.ts:49](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L49)
 
 ---
 
@@ -413,7 +416,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:49](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L49)
+[types.d.ts:50](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L50)
 
 ---
 
@@ -427,7 +430,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:50](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L50)
+[types.d.ts:51](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L51)
 
 ---
 
@@ -441,7 +444,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:51](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L51)
+[types.d.ts:52](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L52)
 
 ---
 
@@ -451,7 +454,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:56](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L56)
+[types.d.ts:57](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L57)
 
 ---
 
@@ -461,7 +464,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:57](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L57)
+[types.d.ts:58](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L58)
 
 ---
 
@@ -475,7 +478,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:40](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L40)
+[types.d.ts:41](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L41)
 
 ---
 
@@ -489,7 +492,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:43](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L43)
+[types.d.ts:44](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L44)
 
 ---
 
@@ -503,7 +506,7 @@ A single line parsed git blame
 
 #### Defined in
 
-[types.d.ts:52](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L52)
+[types.d.ts:53](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L53)
 
 <a name="interfacesmatchmd"></a>
 
@@ -519,7 +522,17 @@ A grep match. Listed vaguely in order of display in csv,
 
 #### Defined in
 
-[types.d.ts:13](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L13)
+[types.d.ts:13](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L13)
+
+---
+
+### head
+
+• **head**: `string`
+
+#### Defined in
+
+[types.d.ts:16](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L16)
 
 ---
 
@@ -529,7 +542,7 @@ A grep match. Listed vaguely in order of display in csv,
 
 #### Defined in
 
-[types.d.ts:12](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L12)
+[types.d.ts:12](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L12)
 
 ---
 
@@ -539,7 +552,7 @@ A grep match. Listed vaguely in order of display in csv,
 
 #### Defined in
 
-[types.d.ts:11](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L11)
+[types.d.ts:11](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L11)
 
 ---
 
@@ -549,7 +562,7 @@ A grep match. Listed vaguely in order of display in csv,
 
 #### Defined in
 
-[types.d.ts:6](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L6)
+[types.d.ts:6](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L6)
 
 ---
 
@@ -559,7 +572,7 @@ A grep match. Listed vaguely in order of display in csv,
 
 #### Defined in
 
-[types.d.ts:18](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L18)
+[types.d.ts:19](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L19)
 
 ---
 
@@ -569,7 +582,7 @@ A grep match. Listed vaguely in order of display in csv,
 
 #### Defined in
 
-[types.d.ts:14](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L14)
+[types.d.ts:14](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L14)
 
 ---
 
@@ -579,7 +592,7 @@ A grep match. Listed vaguely in order of display in csv,
 
 #### Defined in
 
-[types.d.ts:10](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L10)
+[types.d.ts:10](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L10)
 
 ---
 
@@ -589,7 +602,7 @@ A grep match. Listed vaguely in order of display in csv,
 
 #### Defined in
 
-[types.d.ts:9](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L9)
+[types.d.ts:9](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L9)
 
 ---
 
@@ -599,7 +612,7 @@ A grep match. Listed vaguely in order of display in csv,
 
 #### Defined in
 
-[types.d.ts:19](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L19)
+[types.d.ts:20](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L20)
 
 ---
 
@@ -609,7 +622,7 @@ A grep match. Listed vaguely in order of display in csv,
 
 #### Defined in
 
-[types.d.ts:7](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L7)
+[types.d.ts:7](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L7)
 
 ---
 
@@ -619,7 +632,7 @@ A grep match. Listed vaguely in order of display in csv,
 
 #### Defined in
 
-[types.d.ts:15](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/types.d.ts#L15)
+[types.d.ts:15](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/types.d.ts#L15)
 
 <a name="modulesmd"></a>
 
@@ -642,17 +655,17 @@ Assign a name, primarily to use for env variable prefix
 
 #### Defined in
 
-[config.ts:17](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/config.ts#L17)
+[config.ts:17](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/config.ts#L17)
 
 ---
 
-### csvHeaders
+### csvHeaderTitles
 
-• `Const` **csvHeaders**: `string`[]
+• `Const` **csvHeaderTitles**: `string`[]
 
 #### Defined in
 
-[csv.ts:8](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/csv.ts#L8)
+[csv.ts:8](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/csv.ts#L8)
 
 ---
 
@@ -668,7 +681,7 @@ Assign a name, primarily to use for env variable prefix
 
 #### Defined in
 
-[index.ts:11](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/index.ts#L11)
+[index.ts:11](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/index.ts#L11)
 
 ---
 
@@ -680,7 +693,7 @@ For reference, a copy of the startup defaults
 
 #### Defined in
 
-[config.ts:55](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/config.ts#L55)
+[config.ts:55](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/config.ts#L55)
 
 ---
 
@@ -692,7 +705,7 @@ Source to read. Defaults to `-` for stdin.
 
 #### Defined in
 
-[config.ts:21](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/config.ts#L21)
+[config.ts:21](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/config.ts#L21)
 
 ---
 
@@ -704,7 +717,7 @@ Whether to load dotenv or a function to load it
 
 #### Defined in
 
-[config.ts:25](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/config.ts#L25)
+[config.ts:25](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/config.ts#L25)
 
 ---
 
@@ -716,7 +729,7 @@ Seperator for multi-line code blocks
 
 #### Defined in
 
-[config.ts:29](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/config.ts#L29)
+[config.ts:29](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/config.ts#L29)
 
 ---
 
@@ -728,7 +741,7 @@ Expect semgrep json input
 
 #### Defined in
 
-[config.ts:33](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/config.ts#L33)
+[config.ts:33](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/config.ts#L33)
 
 ---
 
@@ -740,7 +753,7 @@ Separator for output csv
 
 #### Defined in
 
-[config.ts:37](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/config.ts#L37)
+[config.ts:37](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/config.ts#L37)
 
 ## Functions
 
@@ -763,13 +776,13 @@ Get config from args & env
 
 #### Defined in
 
-[config.ts:84](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/config.ts#L84)
+[config.ts:84](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/config.ts#L84)
 
 ---
 
 ### csv
 
-▸ **csv**(`c`): (`source`: `AsyncIterable`<`Partial`<[`Match`](#interfacesmatchmd)\>\>) => `AsyncIterable`<`string`\>
+▸ **csv**(`c`): (`source`: `AsyncIterable`<[`Match`](#interfacesmatchmd)\>) => `AsyncIterable`<`string`\>
 
 #### Parameters
 
@@ -785,9 +798,9 @@ Get config from args & env
 
 ##### Parameters
 
-| Name     | Type                                                        |
-| :------- | :---------------------------------------------------------- |
-| `source` | `AsyncIterable`<`Partial`<[`Match`](#interfacesmatchmd)\>\> |
+| Name     | Type                                            |
+| :------- | :---------------------------------------------- |
+| `source` | `AsyncIterable`<[`Match`](#interfacesmatchmd)\> |
 
 ##### Returns
 
@@ -795,7 +808,39 @@ Get config from args & env
 
 #### Defined in
 
-[csv.ts:38](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/csv.ts#L38)
+[csv.ts:52](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/csv.ts#L52)
+
+---
+
+### csvHeaders
+
+▸ **csvHeaders**(`c`): (`source`: `AsyncIterable`<`string`\>) => `AsyncGenerator`<`string`, `void`, `undefined`\>
+
+#### Parameters
+
+| Name | Type                            |
+| :--- | :------------------------------ |
+| `c`  | [`Config`](#interfacesconfigmd) |
+
+#### Returns
+
+`fn`
+
+▸ (`source`): `AsyncGenerator`<`string`, `void`, `undefined`\>
+
+##### Parameters
+
+| Name     | Type                       |
+| :------- | :------------------------- |
+| `source` | `AsyncIterable`<`string`\> |
+
+##### Returns
+
+`AsyncGenerator`<`string`, `void`, `undefined`\>
+
+#### Defined in
+
+[csv.ts:24](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/csv.ts#L24)
 
 ---
 
@@ -817,7 +862,7 @@ Populate a Config with defaults.
 
 #### Defined in
 
-[config.ts:42](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/config.ts#L42)
+[config.ts:42](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/config.ts#L42)
 
 ---
 
@@ -837,7 +882,35 @@ Populate a Config with defaults.
 
 #### Defined in
 
-[streams.ts:44](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/streams.ts#L44)
+[streams.ts:44](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/streams.ts#L44)
+
+---
+
+### gitHead
+
+▸ **gitHead**(): (`source`: `AsyncIterable`<`Partial`<[`Match`](#interfacesmatchmd)\>\>) => `AsyncGenerator`<`Partial`<[`Match`](#interfacesmatchmd)\>, `void`, `unknown`\>
+
+Attach the sha of main branch
+
+#### Returns
+
+`fn`
+
+▸ (`source`): `AsyncGenerator`<`Partial`<[`Match`](#interfacesmatchmd)\>, `void`, `unknown`\>
+
+##### Parameters
+
+| Name     | Type                                                        |
+| :------- | :---------------------------------------------------------- |
+| `source` | `AsyncIterable`<`Partial`<[`Match`](#interfacesmatchmd)\>\> |
+
+##### Returns
+
+`AsyncGenerator`<`Partial`<[`Match`](#interfacesmatchmd)\>, `void`, `unknown`\>
+
+#### Defined in
+
+[git.ts:147](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/git.ts#L147)
 
 ---
 
@@ -857,13 +930,13 @@ Populate a Config with defaults.
 
 #### Defined in
 
-[streams.ts:44](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/streams.ts#L44)
+[streams.ts:44](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/streams.ts#L44)
 
 ---
 
 ### githubPr
 
-▸ **githubPr**(`source`): `AsyncIterable`<`Partial`<[`Match`](#interfacesmatchmd)\>\>
+▸ **githubPr**(`source`): `AsyncIterable`<[`Match`](#interfacesmatchmd)\>
 
 #### Parameters
 
@@ -873,11 +946,11 @@ Populate a Config with defaults.
 
 #### Returns
 
-`AsyncIterable`<`Partial`<[`Match`](#interfacesmatchmd)\>\>
+`AsyncIterable`<[`Match`](#interfacesmatchmd)\>
 
 #### Defined in
 
-[streams.ts:44](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/streams.ts#L44)
+[streams.ts:44](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/streams.ts#L44)
 
 ---
 
@@ -900,7 +973,7 @@ Process an async-iterator of strings, splitting it on newlines
 
 #### Defined in
 
-[lines.ts:8](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/lines.ts#L8)
+[lines.ts:8](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/lines.ts#L8)
 
 ---
 
@@ -916,7 +989,7 @@ Default strategy to load dotenv first time only.
 
 #### Defined in
 
-[config.ts:75](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/config.ts#L75)
+[config.ts:75](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/config.ts#L75)
 
 ---
 
@@ -939,7 +1012,7 @@ Or pass through if no multilineSep configured
 
 #### Defined in
 
-[group.ts:8](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/group.ts#L8)
+[group.ts:8](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/group.ts#L8)
 
 ---
 
@@ -971,7 +1044,7 @@ Or pass through if no multilineSep configured
 
 #### Defined in
 
-[parse.ts:25](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/parse.ts#L25)
+[parse.ts:25](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/parse.ts#L25)
 
 ---
 
@@ -991,7 +1064,7 @@ Or pass through if no multilineSep configured
 
 #### Defined in
 
-[parse.ts:109](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/parse.ts#L109)
+[parse.ts:109](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/parse.ts#L109)
 
 ---
 
@@ -1013,7 +1086,7 @@ Parse semgrep json input lines
 
 #### Defined in
 
-[parse.ts:88](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/parse.ts#L88)
+[parse.ts:88](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/parse.ts#L88)
 
 ---
 
@@ -1034,7 +1107,7 @@ Parse semgrep json input lines
 
 #### Defined in
 
-[config.ts:132](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/config.ts#L132)
+[config.ts:134](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/config.ts#L134)
 
 ---
 
@@ -1051,7 +1124,7 @@ Can be useful if config might change & wants freshened.
 
 #### Defined in
 
-[config.ts:66](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/config.ts#L66)
+[config.ts:66](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/config.ts#L66)
 
 ---
 
@@ -1071,7 +1144,7 @@ Can be useful if config might change & wants freshened.
 
 #### Defined in
 
-[streams.ts:44](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/streams.ts#L44)
+[streams.ts:44](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/streams.ts#L44)
 
 ---
 
@@ -1091,4 +1164,4 @@ Can be useful if config might change & wants freshened.
 
 #### Defined in
 
-[lines.ts:42](https://github.com/pinko-fowle/gitgrep2csv/blob/2045594/lines.ts#L42)
+[lines.ts:42](https://github.com/pinko-fowle/gitgrep2csv/blob/3e1ed1d/lines.ts#L42)

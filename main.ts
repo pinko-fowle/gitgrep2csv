@@ -4,11 +4,11 @@ import { pipe } from "it-pipe";
 
 import config, { processConfig } from "./config.js";
 import { csv, csvHeaders } from "./csv.js";
-import { gitBlame, gitProject, githubPr } from "./git.js";
+import { gitBlame, gitHead, gitProject, githubPr } from "./git.js";
 import group from "./group.js";
 import { lines, tabsToSpaces } from "./lines.js";
 import { parse, parseSemgrep } from "./parse.js";
-import { readInput } from "./streams.js";
+import { readInput, replace } from "./streams.js";
 import { Config, Match } from "./types.js";
 
 /**
@@ -37,8 +37,11 @@ export function grepMain(c: Config = config(process.argv, { process })) {
     parse(c) as (source: unknown) => AsyncIterable<Partial<Match>>,
     gitProject,
     gitBlame,
+    gitHead(),
     githubPr,
-    csv(c)
+    csv(c),
+    csvHeaders(c),
+    replace(/\r?\n/g, "\\n")
   );
 }
 
@@ -50,15 +53,17 @@ export function semgrepMain(c: Config = config(process.argv, { process })) {
     parseSemgrep,
     gitProject,
     gitBlame,
+    gitHead(),
     githubPr,
-    csv(c)
+    csv(c),
+    csvHeaders(c),
+    replace(/\r?\n/g, "\\n")
   );
 }
 
 export async function print(source: AsyncIterable<any>) {
-  console.log(csvHeaders.join("\t")); // womp womp no config#sep
   for await (let item of source) {
-    console.log(item?.replaceAll(/\r?\n/g, "\\n"));
+    console.log(item);
   }
 }
 

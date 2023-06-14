@@ -119,6 +119,7 @@ export const argsConfig = (
     })
     .option("sep", {
       alias: "S",
+      coerce: (sep) => (sep === "\\t" ? "\t" : sep),
       description: "csv output separator",
       nargs: 1,
     })
@@ -126,6 +127,7 @@ export const argsConfig = (
       description: "expect semgrep json input",
       boolean: true,
     });
+
   return computed.argv as unknown as Config;
 };
 

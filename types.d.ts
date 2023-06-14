@@ -13,6 +13,7 @@ export interface Match {
   blame?: GitBlame;
   merge?: GitMerge;
   vars?: Record<string, string>; // semgrep can capture variables for us
+  head: string; // rev that head is on
 
   // not displayed
   matches?: number[]; // unused for now
