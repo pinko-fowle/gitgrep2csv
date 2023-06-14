@@ -51,7 +51,7 @@ function makeString<T>(
     buffer.push(output);
   }
 
-  const joined = buffer.join("\\n");
+  const joined = `"${buffer.join("\n")}"`;
   return post ? post(joined) : joined;
 }
 
@@ -87,7 +87,7 @@ const writeCsv = (c: Config) => (m: Match) => {
 
     //m.merge &&
     //  `[\`#${m.merge?.pr}\`](https://github.com/socialtables/${m.project}/pulls/${m.merge?.pr})`,
-    m.text.replaceAll(/\r?\n/g, ""),
+    '"' + m.text.replaceAll(/\r?\n/g, "\n").replaceAll(/"/g, "'") + '"',
   ];
   return output.join(c.sep);
 };
