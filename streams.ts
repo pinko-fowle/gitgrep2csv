@@ -61,3 +61,9 @@ export const replace = (r: RegExp, sub: string) =>
       yield item.replaceAll(r, sub);
     }
   };
+
+function unpartialItem<T>(o: Partial<T>) {
+  return o as T;
+}
+
+export const unpartial = itMap(unpartialItem);
