@@ -3,7 +3,7 @@ import * as fs from "node:fs/promises";
 import { camelCase } from "camel-case";
 import { execa } from "execa";
 import { itMap } from "./streams.js";
-import { Config, GitBlame, Match } from "./types.js";
+import { Config, GitBlame, GitMerge, Match } from "./types.js";
 
 /**
  * Find the root of the project, and path of the file inside the project
@@ -165,7 +165,30 @@ const mergeFormat = [
   "%s", // summary
 ].join("\t");
 
-async function githubPrMatch(m: Partial<Match>): Promise<Match> {
+/**
+ * Build `GitMerge` for all merges
+ */
+async function githubPrMatch(m: Partial<Match>): Promise<Partial<Match>> {
+  const merges: Record<string, GitMerge> = {};
+  for (let c in m.commits) {
+    // get merge for this commit
+    const pr = await githubPrCommit(m, c);
+    // multiple commits may have same pr, but each will resolve the same.
+    // so just overwrite.
+    merges[pr.rev] = pr;
+  }
+  m.merges = merges;
+
+  return m;
+}
+
+/**
+ * Build a `GitMerge` for a single commit
+ */
+async function githubPrCommit(
+  m: Partial<Match>,
+  commit: string
+): Promise<GitMerge> {
   const cwd = process.cwd() + path.sep + path.dirname(m.matchedPath || "");
   const cmd = `git log --merges --format='${mergeFormat}' --ancestry-path ${commit}..main | grep 'pull request' | head -n1`;
   const mergeLog = await execa(cmd, { cwd, shell: true });
@@ -183,7 +206,8 @@ async function githubPrMatch(m: Partial<Match>): Promise<Match> {
 
   const pr = /pull request #(\d+)/.exec(summary);
   const branch = /from (.*)/.exec(summary);
-  m.merge = {
+
+  const merge: GitMerge = {
     rev,
     author,
     authorEmail,
@@ -196,7 +220,7 @@ async function githubPrMatch(m: Partial<Match>): Promise<Match> {
     pr: Number.parseInt(pr?.[1] || "-1"),
     branch: branch?.[1],
   };
-  return m as Match;
+  return merge;
 }
 
 /**
