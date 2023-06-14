@@ -44,7 +44,7 @@ const writeCsv = (c: Config) => (m: Match) => {
     m.merge?.branch,
     m.text,
   ];
-  return output.join();
+  return output.join(c.sep);
 };
 export const csv = (c: Config) => itMap(writeCsv(c));
 export default csv;
