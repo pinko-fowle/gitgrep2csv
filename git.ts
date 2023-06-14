@@ -35,8 +35,11 @@ const blameHeaders = ["author", "committer", "summary", "previous", "filename"];
  * Extract a git blame --porcelain for a single line only
  * If we need blame on multiple lines this will need to be heavily rebuilt
  */
-async function parseGitBlame(lines: string[], start = 0) : Promise<Record<string,GitBlame>> {
-  let commits: Record<string,GitBlame> = {};
+async function parseGitBlame(
+  lines: string[],
+  start = 0
+): Promise<Record<string, GitBlame>> {
+  let commits: Record<string, GitBlame> = {};
   for (let i = 0; i < lines.length; ++i) {
     // read header line
     const header = lines[i];
@@ -54,13 +57,12 @@ async function parseGitBlame(lines: string[], start = 0) : Promise<Record<string
       // build blame
       blame = commits[rev] = {
         rev,
-        lines: []
+        lines: [],
       } as unknown as GitBlame;
 
-      let next = i + 1;
       // read info lines
-      for (; next < lines.length; ++next) {
-        const info = lines[next];
+      for (i++; i < lines.length; ++i) {
+        const info = lines[i];
         // split info line
         const infoSplit = info.split(" ");
 
@@ -68,7 +70,7 @@ async function parseGitBlame(lines: string[], start = 0) : Promise<Record<string
         const infoKeyStart = infoSplit[0].split("-")[0];
         // make sure this is an info line
         if (blameHeaders.indexOf(infoKeyStart) == -1) {
-          // or we're done, this is a rev
+          // or we're done, this is the code line
           break;
         }
 
@@ -81,8 +83,10 @@ async function parseGitBlame(lines: string[], start = 0) : Promise<Record<string
 
         (blame as any)[key] = value;
       }
-      // advance past info
-      i += next - 1;
+    } else {
+      // already know this commit
+      // ignore the output line
+      i++;
     }
 
     // add lines
