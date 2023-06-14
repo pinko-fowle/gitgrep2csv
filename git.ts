@@ -105,7 +105,7 @@ const mergeFormat = [
   "%s", // summary
 ].join("\t");
 
-async function githubPrMatch(m: Partial<Match>): Promise<Partial<Match>> {
+async function githubPrMatch(m: Partial<Match>): Promise<Match> {
   const cwd = process.cwd() + path.sep + path.dirname(m.matchedPath || "");
   const mergeLog = await execa(
     `git log --merges --format='${mergeFormat}' --ancestry-path ${m.blame?.rev}..main | grep 'pull request' | head -n1`,
@@ -138,7 +138,7 @@ async function githubPrMatch(m: Partial<Match>): Promise<Partial<Match>> {
     pr: Number.parseInt(pr?.[1] || "-1"),
     branch: branch?.[1],
   };
-  return m;
+  return m as Match;
 }
 
 export const gitProject = itMap(gitProjectMatch);
