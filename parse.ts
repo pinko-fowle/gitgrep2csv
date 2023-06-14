@@ -95,11 +95,21 @@ export async function parseSemgrepMatch(
     },
     {} as Record<string, string>
   );
+
+  const lineEnd = semgrep.end.line;
+  const lineStart = semgrep.start.line;
+  const lineLen = lineEnd - lineStart;
+  const matches = new Array(lineEnd - lineStart);
+  for (let i = 0; i < lineLen; ++i) {
+    matches[i] = lineStart + i;
+  }
+
   return {
-    lineStart: semgrep.start.line,
-    lineEnd: semgrep.end.line,
+    lineStart,
+    lineEnd,
     text: semgrep.extra.lines,
     matchedPath: semgrep.path,
+    matches,
     vars,
   };
 }
