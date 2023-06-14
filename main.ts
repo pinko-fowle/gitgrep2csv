@@ -38,7 +38,9 @@ export function grepMain(c: Config = config(process.argv, { process })) {
     gitProject,
     gitBlame,
     githubPr,
-    csv(c)
+    csv(c),
+    csvHeaders(c),
+    replace(/\r?\n/g, "\\n")
   );
 }
 
@@ -51,14 +53,15 @@ export function semgrepMain(c: Config = config(process.argv, { process })) {
     gitProject,
     gitBlame,
     githubPr,
-    csv(c)
+    csv(c),
+    csvHeaders(c),
+    replace(/\r?\n/g, "\\n")
   );
 }
 
 export async function print(source: AsyncIterable<any>) {
-  console.log(csvHeaders.join("\t")); // womp womp no config#sep
   for await (let item of source) {
-    console.log(item?.replaceAll(/\r?\n/g, "\\n"));
+    console.log(item);
   }
 }
 

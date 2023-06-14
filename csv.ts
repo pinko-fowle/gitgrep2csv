@@ -5,7 +5,7 @@ function toEpoch(d?: Date) {
   return Math.floor(d?.getTime() || 0 / 1000);
 }
 
-export const csvHeaders = [
+export const csvHeaderTitles = [
   "project",
   "path",
   "line",
@@ -16,10 +16,21 @@ export const csvHeaders = [
   "mergeDate",
   "pr",
   "branch",
+  "code link",
+  "pr link",
   "text",
 ];
 
-const writeCsv = (c: Config) => (m: Partial<Match>) => {
+export const csvHeaders = (c: Config) =>
+  async function* csvHeaderInjector(source: AsyncIterable<string>) {
+    yield csvHeaderTitles.join(c.sep);
+    yield* source;
+  };
+
+/**
+ * Print the CSV for matches
+ */
+const writeCsv = (c: Config) => (m: Match) => {
   let output = [
     m.project,
     m.path,

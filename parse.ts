@@ -115,7 +115,6 @@ export async function* parseSemgrep(source: AsyncIterable<string>) {
 
   // combine to json
   const semgrep = JSON.parse(buffer.join(""));
-  console.log(semgrep);
   // read out results
   for await (let result of semgrep.results) {
     yield parseSemgrepMatch(result);
