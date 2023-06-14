@@ -8,7 +8,7 @@ import { gitBlame, gitHead, gitProject, githubPr } from "./git.js";
 import group from "./group.js";
 import { lines, tabsToSpaces } from "./lines.js";
 import { parse, parseSemgrep } from "./parse.js";
-import { readInput, replace } from "./streams.js";
+import { readInput, replace, unpartial } from "./streams.js";
 import { Config, Match } from "./types.js";
 
 /**
@@ -39,9 +39,10 @@ export function grepMain(c: Config = config(process.argv, { process })) {
     gitBlame,
     gitHead(),
     githubPr,
+    unpartial<Match>,
     csv(c),
-    csvHeaders(c),
-    replace(/\r?\n/g, "\\n")
+    csvHeaders(c)
+    //replace(/\r?\n/g, "\\n")
   );
 }
 
@@ -55,9 +56,10 @@ export function semgrepMain(c: Config = config(process.argv, { process })) {
     gitBlame,
     gitHead(),
     githubPr,
+    unpartial<Match>,
     csv(c),
-    csvHeaders(c),
-    replace(/\r?\n/g, "\\n")
+    csvHeaders(c)
+    //replace(/\r?\n/g, "\\n")
   );
 }
 
