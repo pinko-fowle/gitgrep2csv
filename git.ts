@@ -28,39 +28,70 @@ async function gitProjectMatch(m: Partial<Match>): Promise<Partial<Match>> {
   return m;
 }
 
+// keywords indicating a git blame header
+const blameHeaders = ["author", "committer", "summary", "previous", "filename"];
+
 /**
  * Extract a git blame --porcelain for a single line only
  * If we need blame on multiple lines this will need to be heavily rebuilt
  */
-async function parseGitBlame(lines: string[]) {
-  const output = {} as GitBlame;
-  const split: string[][] = lines.map((line) => line.split(" "));
+async function parseGitBlame(lines: string[], start = 0) : Promise<Record<string,GitBlame>> {
+  let commits: Record<string,GitBlame> = {};
+  for (let i = 0; i < lines.length; ++i) {
+    // read header line
+    const header = lines[i];
+    const headerSplit = header.split(" ");
+    const rev = headerSplit[0];
+    const line = Number.parseInt(headerSplit[1]);
+    //const lineNew = Number.parseInt(headerSplit[2]);
+    const subsequent = Number.parseInt(headerSplit[3]);
 
-  // first line
-  const [rev, lineNum, lineNumNew, subsequent] = split[0];
-  Object.assign(output, { rev, lineNum, lineNumNew, subsequent });
+    // find blame to add these line to
+    let blame = commits[rev];
 
-  // headers
-  let n = 1,
-    cursor;
-  for (
-    cursor = split[n];
-    cursor[0].startsWith("author") || cursor[0].startsWith("committer");
-    cursor = split[++n]
-  ) {
-    const key = camelCase(cursor[0]);
-    let value: any = cursor[1];
-    const numberify = Number.parseInt(value);
-    if (numberify) value = numberify;
-    if (numberify && key.endsWith("Time")) value = new Date(numberify);
-    (output as any)[key] = value;
+    // if there is no blame for this commit/rev yet, it's a new commit. read it's info.
+    if (!blame) {
+      // build blame
+      blame = commits[rev] = {
+        rev,
+        lines: []
+      } as unknown as GitBlame;
+
+      let next = i + 1;
+      // read info lines
+      for (; next < lines.length; ++next) {
+        const info = lines[next];
+        // split info line
+        const infoSplit = info.split(" ");
+
+        // get "author" from "author-email" info
+        const infoKeyStart = infoSplit[0].split("-")[0];
+        // make sure this is an info line
+        if (blameHeaders.indexOf(infoKeyStart) == -1) {
+          // or we're done, this is a rev
+          break;
+        }
+
+        // extract info key/value
+        const key = camelCase(infoSplit[0]);
+        let value: any = info.substring(infoSplit[0].length + 1);
+        const numberify = Number.parseInt(value);
+        if (numberify) value = numberify;
+        if (numberify && key.endsWith("Time")) value = new Date(numberify);
+
+        (blame as any)[key] = value;
+      }
+      // advance past info
+      i += next - 1;
+    }
+
+    // add lines
+    const end = line + subsequent;
+    for (let i = line; i < end; ++i) {
+      blame.lines?.push(i);
+    }
   }
-
-  // summary
-  output.summary = lines[n++];
-
-  // we ignore file output(s) since we already know the line/text
-  return output;
+  return commits;
 }
 
 const ignorePaths = new Map<string, boolean>()
@@ -88,29 +119,29 @@ async function ignoreArgs(rootDir: string) {
   }
 }
 
-
+/**
+ * Build git blame info on partial Match.
+ */
 async function gitBlameMatch(m: Partial<Match>): Promise<Partial<Match>> {
   if (!m?.path || !m?.rootDir) {
     return m;
   }
 
   const ignore = await ignoreArgs(m.rootDir) || [];
-
-  const line = (m.matches?.[0] || 0) + 1;
   const blameLines = await execa(
     "git",
     [
       "blame",
       "--porcelain", // machine output
       "-L",
-      `${line},${line}`, // a specific line number
+      `${m.lineStart},${m.lineEnd}`, // a specific line number
       ...ignore,
       m.path.substring(1),
     ],
     { cwd: m.rootDir }
   );
 
-  m.blame = await parseGitBlame(blameLines.stdout.split(/\r?\n/));
+  m.commits = await parseGitBlame(blameLines.stdout.split(/\r?\n/));
   return m;
 }
 
