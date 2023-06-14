@@ -8,7 +8,7 @@ import { gitBlame, gitProject, githubPr } from "./git.js";
 import group from "./group.js";
 import { lines, tabsToSpaces } from "./lines.js";
 import { parse, parseSemgrep } from "./parse.js";
-import { readInput } from "./streams.js";
+import { readInput, replace } from "./streams.js";
 import { Config, Match } from "./types.js";
 
 /**

@@ -54,3 +54,10 @@ export function itMap<I, O>(mapper: (i: I) => Promise<O> | O) {
 export function identity<I>(source: I) {
   return source;
 }
+
+export const replace = (r: RegExp, sub: string) =>
+  async function* replace(source: AsyncIterable<string>) {
+    for await (let item of source) {
+      yield item.replaceAll(r, sub);
+    }
+  };
