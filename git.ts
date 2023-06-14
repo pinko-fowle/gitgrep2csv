@@ -3,7 +3,7 @@ import * as fs from "node:fs/promises";
 import { camelCase } from "camel-case";
 import { execa } from "execa";
 import { itMap } from "./streams.js";
-import { Config, GitBlame, Match } from "./types.js";
+import { Config, GitBlame, GitMerge, Match } from "./types.js";
 
 /**
  * Find the root of the project, and path of the file inside the project
@@ -28,68 +28,128 @@ async function gitProjectMatch(m: Partial<Match>): Promise<Partial<Match>> {
   return m;
 }
 
+// keywords indicating a git blame header
+const blameHeaders = ["author", "committer", "summary", "previous", "filename"];
+
 /**
  * Extract a git blame --porcelain for a single line only
  * If we need blame on multiple lines this will need to be heavily rebuilt
  */
-async function parseGitBlame(lines: string[]) {
-  const output = {} as GitBlame;
-  const split: string[][] = lines.map((line) => line.split(" "));
+async function parseGitBlame(
+  lines: string[],
+  start = 0
+): Promise<Record<string, GitBlame>> {
+  let commits: Record<string, GitBlame> = {};
+  for (let i = 0; i < lines.length; ++i) {
+    // read header line
+    const header = lines[i];
+    const headerSplit = header.split(" ");
+    const rev = headerSplit[0];
+    const line = Number.parseInt(headerSplit[1]);
+    //const lineNew = Number.parseInt(headerSplit[2]);
+    const subsequent = Number.parseInt(headerSplit[3]);
 
-  // first line
-  const [rev, lineNum, lineNumNew, subsequent] = split[0];
-  Object.assign(output, { rev, lineNum, lineNumNew, subsequent });
+    // find blame to add these line to
+    let blame = commits[rev];
 
-  // headers
-  let n = 1,
-    cursor;
-  for (
-    cursor = split[n];
-    cursor[0].startsWith("author") || cursor[0].startsWith("committer");
-    cursor = split[++n]
-  ) {
-    const key = camelCase(cursor[0]);
-    let value: any = cursor[1];
-    const numberify = Number.parseInt(value);
-    if (numberify) value = numberify;
-    if (numberify && key.endsWith("Time")) value = new Date(numberify);
-    (output as any)[key] = value;
+    // if there is no blame for this commit/rev yet, it's a new commit. read it's info.
+    if (!blame) {
+      // build blame
+      blame = commits[rev] = {
+        rev,
+        lines: [],
+      } as unknown as GitBlame;
+
+      // read info lines
+      for (i++; i < lines.length; ++i) {
+        const info = lines[i];
+        // split info line
+        const infoSplit = info.split(" ");
+
+        // get "author" from "author-email" info
+        const infoKeyStart = infoSplit[0].split("-")[0];
+        // make sure this is an info line
+        if (blameHeaders.indexOf(infoKeyStart) == -1) {
+          // or we're done, this is the code line
+          break;
+        }
+
+        // extract info key/value
+        const key = camelCase(infoSplit[0]);
+        let value: any = info.substring(infoSplit[0].length + 1);
+        const numberify = Number.parseInt(value);
+        if (numberify) value = numberify;
+        if (numberify && key.endsWith("Time"))
+          value = new Date(numberify * 1000);
+
+        (blame as any)[key] = value;
+      }
+    } else {
+      // already know this commit
+      // ignore the output line
+      i++;
+    }
+
+    // add lines
+    const end = line + subsequent;
+    for (let i = line; i < end; ++i) {
+      blame.lines?.push(i);
+    }
   }
 
-  // summary
-  output.summary = lines[n++];
-
-  // we ignore file output(s) since we already know the line/text
-  return output;
+  return commits;
 }
 
+const ignorePaths = new Map<string, boolean>();
+
+/**
+ * Gather git --ignore-revs-file information
+ */
+async function ignoreArgs(rootDir: string) {
+  let ignorePath: string | undefined;
+  let hasIgnore = ignorePaths.get(rootDir);
+
+  if (hasIgnore === undefined) {
+    ignorePath = path.resolve(rootDir, ".git-blame-ignore-revs");
+    let ignore: string[] = [];
+    try {
+      await fs.stat(ignorePath);
+      hasIgnore = true;
+      ignorePaths.set(rootDir, true);
+    } catch {
+      ignorePaths.set(rootDir, false);
+    }
+  }
+
+  if (hasIgnore) {
+    if (!ignorePath) {
+      ignorePath = path.resolve(rootDir, ".git-blame-ignore-revs");
+    }
+    return ["--ignore-revs-file", ignorePath];
+  }
+}
+
+/**
+ * Build git blame info on partial Match.
+ */
 async function gitBlameMatch(m: Partial<Match>): Promise<Partial<Match>> {
   if (!m?.path || !m?.rootDir) {
     return m;
   }
 
-  const ignorePath = path.resolve(m.rootDir, ".git-blame-ignore-revs");
-  let ignore: string[] = [];
-  try {
-    await fs.stat(ignorePath);
-    ignore = ["--ignore-revs-file", ignorePath];
-  } catch {}
+  const ignore = (await ignoreArgs(m.rootDir)) || [];
+  const args = [
+    "blame",
+    "--porcelain", // machine output
+    "-L",
+    `${m.lineStart},${m.lineEnd}`, // a specific line number
+    ...ignore,
+    m.path.substring(1),
+  ];
 
-  const line = (m.matches?.[0] || 0) + 1;
-  const blameLines = await execa(
-    "git",
-    [
-      "blame",
-      "--porcelain", // machine output
-      "-L",
-      `${line},${line}`, // a specific line number
-      ...ignore,
-      m.path.substring(1),
-    ],
-    { cwd: m.rootDir }
-  );
+  const blameLines = await execa("git", args, { cwd: m.rootDir });
 
-  m.blame = await parseGitBlame(blameLines.stdout.split(/\r?\n/));
+  m.commits = await parseGitBlame(blameLines.stdout.split(/\r?\n/));
   return m;
 }
 
@@ -105,12 +165,33 @@ const mergeFormat = [
   "%s", // summary
 ].join("\t");
 
-async function githubPrMatch(m: Partial<Match>): Promise<Match> {
+/**
+ * Build `GitMerge` for all merges
+ */
+async function githubPrMatch(m: Partial<Match>): Promise<Partial<Match>> {
+  const merges: Record<string, GitMerge> = {};
+  for (let c in m.commits) {
+    // get merge for this commit
+    const pr = await githubPrCommit(m, c);
+    // multiple commits may have same pr, but each will resolve the same.
+    // so just overwrite.
+    merges[pr.rev] = pr;
+  }
+  m.merges = merges;
+
+  return m;
+}
+
+/**
+ * Build a `GitMerge` for a single commit
+ */
+async function githubPrCommit(
+  m: Partial<Match>,
+  commit: string
+): Promise<GitMerge> {
   const cwd = process.cwd() + path.sep + path.dirname(m.matchedPath || "");
-  const mergeLog = await execa(
-    `git log --merges --format='${mergeFormat}' --ancestry-path ${m.blame?.rev}..main | grep 'pull request' | head -n1`,
-    { cwd, shell: true }
-  );
+  const cmd = `git log --merges --format='${mergeFormat}' --ancestry-path ${commit}..main | grep 'pull request' | head -n1`;
+  const mergeLog = await execa(cmd, { cwd, shell: true });
   const [
     rev,
     author,
@@ -125,20 +206,21 @@ async function githubPrMatch(m: Partial<Match>): Promise<Match> {
 
   const pr = /pull request #(\d+)/.exec(summary);
   const branch = /from (.*)/.exec(summary);
-  m.merge = {
+
+  const merge: GitMerge = {
     rev,
     author,
     authorEmail,
-    authorTime: new Date(Number.parseInt(authorTime)),
+    authorTime: new Date(Number.parseInt(authorTime) * 1000),
     committer,
     committerEmail,
-    committerTime: new Date(Number.parseInt(authorTime)),
+    committerTime: new Date(Number.parseInt(committerTime) * 1000),
     summary,
-    parent: parent.split(" "),
+    parent: parent?.split(" "),
     pr: Number.parseInt(pr?.[1] || "-1"),
     branch: branch?.[1],
   };
-  return m as Match;
+  return merge;
 }
 
 /**
@@ -161,7 +243,6 @@ export const gitHead = () => {
         try {
           head = (await execa("git", ["rev-parse", "HEAD"], { cwd: m.rootDir }))
             .stdout;
-          console.log({ head, proj: m.rootDir });
 
           projectHeads.set(project, head);
         } catch {}

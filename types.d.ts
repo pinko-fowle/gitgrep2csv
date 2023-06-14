@@ -10,8 +10,8 @@ export interface Match {
   path: string;
   lineStart: number;
   lineEnd: number;
-  blame?: GitBlame;
-  merge?: GitMerge;
+  commits?: Record<string, GitBlame>; // rev->blame
+  merges?: Record<string, GitMerge>; // rev->merge
   vars?: Record<string, string>; // semgrep can capture variables for us
   head: string; // rev that head is on
 
@@ -39,9 +39,7 @@ export interface Config {
  */
 export interface GitBlame {
   rev: string;
-  //lineNum?: number; // blame only
-  //lineNumNew?: number; // blame only
-  subsequent?: number; // blame only
+  //subsequent?: number; // blame only
   author: string;
   authorEmail: string;
   authorTime: Date;
@@ -50,7 +48,9 @@ export interface GitBlame {
   committerEmail: string;
   committerTime: Date;
   committerTz?: number; // blame only
+  previous?: string; // TODO: merge
   summary: string;
+  lines?: number[]; // blame only
 }
 
 export interface GitMerge extends GitBlame {
