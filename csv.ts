@@ -102,6 +102,37 @@ const extractCsv = (c: Config) => (m: Match) => {
   return output;
 };
 
+const COL_SOURCE = 9;
+const COL_PR = 10;
+const COL_TEXT = 11;
+
+/**
+ * Extract raw data for markdown format. Extends `extractCsv` and adds some markdown formatting.
+ */
+const extractMarkdown = (c: Config) => {
+  const extract = extractCsv(c);
+  return function extractMarkdown(m: Match) {
+    const data = extract(m);
+
+    // create friendly markdown link for each source link
+    data[COL_SOURCE] = `[\`${m.path}\`](${data[COL_SOURCE]})`;
+
+    // create friendly markdown link for each pr #
+    data[COL_PR] = makeString(
+      m.merges,
+      (c: GitMerge) =>
+        `[#${c.pr}](https://github.com/socialtables/${m.project}/pulls/${c.pr})`
+    );
+
+    // alas block quotes don't work in markdown
+    // and don't know if there's a way to trick pre into rendering with style
+    // TODO: html table output
+    data[COL_TEXT] = `<pre>${data[COL_TEXT]}</pre>`;
+
+    return data;
+  };
+};
+
 /**
  * Render a single column of csv data.
  */
@@ -141,6 +172,37 @@ export const csv = (c: Config) => {
       const escapedRow = rawRow.map((col) => csvItem(col));
       yield escapedRow.join(c.sep);
     }
-  }
-}
+  };
+};
 export default csv;
+
+/**
+ * Render a single column of markdown data.
+ */
+function mdItem(col: any): string {
+  if (typeof col === "string") {
+    return col.replaceAll(/\r?\n/g, "<br/>");
+  } else if (Array.isArray(col)) {
+    return col.map(mdItem).join("<br/>");
+  }
+  return String(col);
+}
+
+function mdRowPrint(row: any[]) {
+  return `|${row.join("|")}|`;
+}
+
+export const md = (c: Config) => {
+  const extract = extractMarkdown(c);
+  return async function* renderMarkdown(source: AsyncIterable<Match>) {
+    yield mdRowPrint(headerTitles);
+    const headerBar = headerTitles.map(() => "----");
+    yield mdRowPrint(headerBar);
+    for await (let m of source) {
+      const rawRow = extract(m);
+      // map each column via csvItem
+      const escapedRow = rawRow.map((col) => mdItem(col));
+      yield `|${escapedRow.join("|")}|`;
+    }
+  };
+};
