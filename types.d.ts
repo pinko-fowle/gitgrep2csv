@@ -64,6 +64,7 @@ export interface Config {
   appEnv?: string; // defaults to appName.toUpperCase
   input?: ReadInput;
   loadDotEnv?: boolean | Function;
+  markdown: boolean;
   multilineSep?: string | RegExp | null;
   semgrep: boolean;
   sep: string;

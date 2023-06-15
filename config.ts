@@ -24,6 +24,10 @@ export let input: ReadInput | undefined = "-";
  */
 export let loadDotEnv: boolean | Function = () => loadDotEnvOnce;
 /**
+ * Whether to output in markdown
+ */
+export let markdown = false;
+/**
  * Seperator for multi-line code blocks
  */
 export let multilineSep: string = "";
@@ -43,9 +47,10 @@ export const defaults = (base?: Partial<Config>): Config => ({
   appName,
   appEnv: (base?.appName || appName).toLowerCase(),
   input,
-  sep,
+  markdown,
   multilineSep,
   semgrep,
+  sep,
   ...base,
 });
 
@@ -111,6 +116,11 @@ export const argsConfig = (
       alias: "i",
       description: "input file, or - for stdin",
       nargs: 1,
+    })
+    .option("markdown", {
+      alias: "M",
+      description: "output in github markdown format instead",
+      boolean: true,
     })
     .option("multilineSep", {
       alias: ["multisep", "m"],
