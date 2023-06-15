@@ -1,6 +1,15 @@
 import { itMap } from "./streams.js";
 import { Config, GitBlame, GitMerge, Match } from "./types.js";
 
+function sortBlames<B extends GitBlame>(
+  blames: Record<string, B | undefined>
+): (B | undefined)[] {
+  const arr = Object.values(blames);
+  return arr.sort((a, b) =>
+    (a?.authorTime || -1) <= (b?.authorTime || -1) ? -1 : 1
+  );
+}
+
 function toEpoch(d?: Date) {
   return Math.floor(d?.getTime() || 0 / 1000);
 }
@@ -26,33 +35,30 @@ export const headerTitles = [
   "text",
 ];
 
-export const csvHeaders = (c: Config) =>
-  async function* csvHeaderInjector(source: AsyncIterable<string>) {
-    yield headerTitles.join(c.sep);
-    yield* source;
-  };
-
-function makeString<T>(
+/**
+ * Maps over blame generating output
+ */
+function makeString<T extends GitBlame>(
   col: Record<string, T | undefined> | undefined,
   fn: (o: T) => string | undefined,
   post?: (str: string[]) => string[]
 ): string[] {
-  const buffer = [];
-  for (let i in col) {
-    const input = col[i];
-    if (!input) {
-      continue;
-    }
-
-    const output = fn(input);
-    if (!output) {
-      continue;
-    }
-    buffer.push(output);
+  if (col === undefined) {
+    return [];
   }
 
-  //const joined = `"${buffer.join("\n")}"`;
-  return post ? post(buffer) : buffer;
+  const sorted = sortBlames(col);
+  // map but also ignore anything without a value
+  const mapped = sorted.reduce((agg, cur) => {
+    if (cur) {
+      const val = fn(cur);
+      if (val) {
+        agg.push(val);
+      }
+    }
+    return agg;
+  }, [] as string[])
+  return post ? post(mapped) : mapped;
 }
 
 function curryMap<T>(fn: (t: T) => T) {
