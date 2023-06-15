@@ -102,35 +102,40 @@ const extractCsv = (c: Config) => (m: Match) => {
   return output;
 };
 
-const COL_SOURCE = 9;
-const COL_PR = 10;
-const COL_TEXT = 11;
+const mdHeaderTitles = ["project", "path", "commit", "pr", "text"];
 
 /**
  * Extract raw data for markdown format. Extends `extractCsv` and adds some markdown formatting.
  */
-const extractMarkdown = (c: Config) => {
-  const extract = extractCsv(c);
-  return function extractMarkdown(m: Match) {
-    const data = extract(m);
-
-    // create friendly markdown link for each source link
-    data[COL_SOURCE] = `[\`${m.path}\`](${data[COL_SOURCE]})`;
-
-    // create friendly markdown link for each pr #
-    data[COL_PR] = makeString(
-      m.merges,
-      (c: GitMerge) =>
-        `[#${c.pr}](https://github.com/socialtables/${m.project}/pulls/${c.pr})`
-    );
-
-    // alas block quotes don't work in markdown
-    // and don't know if there's a way to trick pre into rendering with style
-    // TODO: html table output
-    data[COL_TEXT] = `<pre>${data[COL_TEXT]}</pre>`;
-
-    return data;
-  };
+const extractMarkdown = (c: Config) => (m: Match) => {
+  const line =
+    m.lineEnd && m.lineEnd != m.lineStart
+      ? `L${m.lineStart}-L${m.lineEnd}`
+      : `L${m.lineStart}`;
+  let output = [
+    m.project,
+    `[\`${m.path}#${line}\`](https://github.com/socialtables/${m.project}/blob/${m.head}${m.path}#${line})`,
+    makeString(m.commits, (c: GitBlame) => {
+      const shortRev = c.rev.substring(0, 8);
+      return `${toDate(
+        c.authorTime
+      )} [\`${shortRev}\`](https://github.com/socialtables/${
+        m.project
+      }/commit/${c.rev})\n${c.summary}\n\n`;
+    }),
+    makeString(m.merges, (c: GitMerge) => {
+      const shortRev = c.rev.substring(0, 8);
+      return `${toDate(c.authorTime)} [#${
+        c.pr
+      }](https://github.com/socialtables/${m.project}/pulls/${c.pr}) ${
+        c.branch
+      }\n`;
+    }),
+    //// TODO: separate summaries better
+    //makeString(m.commits, (c: GitBlame) => c.summary),
+    `<pre>${m.text}</pre>`,
+  ];
+  return output;
 };
 
 /**
@@ -195,8 +200,8 @@ function mdRowPrint(row: any[]) {
 export const md = (c: Config) => {
   const extract = extractMarkdown(c);
   return async function* renderMarkdown(source: AsyncIterable<Match>) {
-    yield mdRowPrint(headerTitles);
-    const headerBar = headerTitles.map(() => "----");
+    yield mdRowPrint(mdHeaderTitles);
+    const headerBar = mdHeaderTitles.map(() => "----");
     yield mdRowPrint(headerBar);
     for await (let m of source) {
       const rawRow = extract(m);
