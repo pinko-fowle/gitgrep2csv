@@ -23,9 +23,9 @@ export const headerTitles = [
   "path",
   "line",
   "lineEnd",
-  "rev",
+  //"rev",
   "date",
-  "mergeRev",
+  //"mergeRev",
   "mergeDate",
   "pr",
   "branch",
@@ -57,31 +57,31 @@ function makeString<T extends GitBlame>(
       }
     }
     return agg;
-  }, [] as string[])
+  }, [] as string[]);
   return post ? post(mapped) : mapped;
 }
 
 function curryMap<T>(fn: (t: T) => T) {
-  return (arr: T[]) => arr.map(fn)
+  return (arr: T[]) => arr.map(fn);
 }
 
 /**
  * Extract array of data for each match that we want to render
  */
-const extractData = (c: Config) => (m: Match) => {
+const extractCsv = (c: Config) => (m: Match) => {
   let output = [
     m.project,
     m.path,
     m.lineStart,
     m.lineEnd,
-    makeString(m.commits, (c: GitBlame) => c.rev),
+    //makeString(m.commits, (c: GitBlame) => c.rev),
     makeString(m.commits, (c: GitBlame) => toDate(c.authorTime).toString()),
-    makeString(m.merges, (c: GitMerge) => c.rev),
+    //makeString(m.merges, (c: GitMerge) => c.rev),
     makeString(m.merges, (c: GitMerge) => toDate(c.authorTime).toString()),
     makeString(
       m.merges,
       (c: GitMerge) => String(c.pr),
-      curryMap(s => `${s.replaceAll(" ", " #")}`)
+      curryMap((s) => `${s.replaceAll(" ", " #")}`)
     ),
     makeString(m.merges, (c: GitMerge) => c.branch),
     // TODO: separate summaries better
@@ -107,20 +107,20 @@ const extractData = (c: Config) => (m: Match) => {
  */
 function csvItem(col: any, quote = true) {
   let output = col;
-  const typeOf = typeof(col);
+  const typeOf = typeof col;
 
   if (typeOf === "string") {
-    output = col 
+    output = col
       // convert to common line ending... meh never mind
       //.replaceAll(/\r?\n/g, "\n")
       // change quotes to single quote
-      .replaceAll(/"/g, "'")
+      .replaceAll(/"/g, "'");
   } else if (Array.isArray(col)) {
-    output = col 
+    output = col
       // escape each column
-      .map(item => csvItem(item, false))
+      .map((item) => csvItem(item, false))
       // join array
-      .join("\n")
+      .join("\n");
   }
   if (typeOf === "number") {
     quote = false;
@@ -132,13 +132,13 @@ function csvItem(col: any, quote = true) {
  * Extra & write csv data
  */
 export const csv = (c: Config) => {
-  const extract = extractData(c)
-  return async function *renderCsv(source: AsyncIterable<Match>) {
+  const extract = extractCsv(c);
+  return async function* renderCsv(source: AsyncIterable<Match>) {
     yield headerTitles.join(c.sep);
     for await (let m of source) {
-      const rawRow = extract(m)
+      const rawRow = extract(m);
       // map each column via csvItem
-      const escapedRow = rawRow.map(col => csvItem(col));
+      const escapedRow = rawRow.map((col) => csvItem(col));
       yield escapedRow.join(c.sep);
     }
   }
