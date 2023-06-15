@@ -41,7 +41,6 @@ export function grepMain(c: Config = config(process.argv, { process })) {
     githubPr,
     unpartial<Match>,
     csv(c),
-    csvHeaders(c)
     //replace(/\r?\n/g, "\\n")
   );
 }
@@ -58,7 +57,6 @@ export function semgrepMain(c: Config = config(process.argv, { process })) {
     githubPr,
     unpartial<Match>,
     csv(c),
-    csvHeaders(c)
     //replace(/\r?\n/g, "\\n")
   );
 }

@@ -9,7 +9,7 @@ function toDate(d?: Date) {
   return d ? `${d.getFullYear()}/${d.getMonth()}/${d.getDay()}` : "";
 }
 
-export const csvHeaderTitles = [
+export const headerTitles = [
   "project",
   "path",
   "line",
@@ -28,15 +28,15 @@ export const csvHeaderTitles = [
 
 export const csvHeaders = (c: Config) =>
   async function* csvHeaderInjector(source: AsyncIterable<string>) {
-    yield csvHeaderTitles.join(c.sep);
+    yield headerTitles.join(c.sep);
     yield* source;
   };
 
 function makeString<T>(
   col: Record<string, T | undefined> | undefined,
   fn: (o: T) => string | undefined,
-  post?: (str: string) => string
-): string {
+  post?: (str: string[]) => string[]
+): string[] {
   const buffer = [];
   for (let i in col) {
     const input = col[i];
@@ -51,14 +51,18 @@ function makeString<T>(
     buffer.push(output);
   }
 
-  const joined = `"${buffer.join("\n")}"`;
-  return post ? post(joined) : joined;
+  //const joined = `"${buffer.join("\n")}"`;
+  return post ? post(buffer) : buffer;
+}
+
+function curryMap<T>(fn: (t: T) => T) {
+  return (arr: T[]) => arr.map(fn)
 }
 
 /**
- * Print the CSV for matches
+ * Extract array of data for each match that we want to render
  */
-const writeCsv = (c: Config) => (m: Match) => {
+const extractData = (c: Config) => (m: Match) => {
   let output = [
     m.project,
     m.path,
@@ -71,7 +75,7 @@ const writeCsv = (c: Config) => (m: Match) => {
     makeString(
       m.merges,
       (c: GitMerge) => String(c.pr),
-      (s: string) => (s ? `${s.replaceAll(" ", " #")}` : "")
+      curryMap(s => `${s.replaceAll(" ", " #")}`)
     ),
     makeString(m.merges, (c: GitMerge) => c.branch),
     // TODO: separate summaries better
@@ -87,9 +91,50 @@ const writeCsv = (c: Config) => (m: Match) => {
 
     //m.merge &&
     //  `[\`#${m.merge?.pr}\`](https://github.com/socialtables/${m.project}/pulls/${m.merge?.pr})`,
-    '"' + m.text.replaceAll(/\r?\n/g, "\n").replaceAll(/"/g, "'") + '"',
+    m.text,
   ];
-  return output.join(c.sep);
+  return output;
 };
-export const csv = (c: Config) => itMap(writeCsv(c));
+
+/**
+ * Render a single column of csv data.
+ */
+function csvItem(col: any, quote = true) {
+  let output = col;
+  const typeOf = typeof(col);
+
+  if (typeOf === "string") {
+    output = col 
+      // convert to common line ending... meh never mind
+      //.replaceAll(/\r?\n/g, "\n")
+      // change quotes to single quote
+      .replaceAll(/"/g, "'")
+  } else if (Array.isArray(col)) {
+    output = col 
+      // escape each column
+      .map(item => csvItem(item, false))
+      // join array
+      .join("\n")
+  }
+  if (typeOf === "number") {
+    quote = false;
+  }
+  return quote ? `"${output}"` : output;
+}
+
+/**
+ * Extra & write csv data
+ */
+export const csv = (c: Config) => {
+  const extract = extractData(c)
+  return async function *renderCsv(source: AsyncIterable<Match>) {
+    yield headerTitles.join(c.sep);
+    for await (let m of source) {
+      const rawRow = extract(m)
+      // map each column via csvItem
+      const escapedRow = rawRow.map(col => csvItem(col));
+      yield escapedRow.join(c.sep);
+    }
+  }
+}
 export default csv;
