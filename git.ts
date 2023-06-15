@@ -190,7 +190,7 @@ async function githubPrCommit(
   commit: string
 ): Promise<GitMerge> {
   const cwd = process.cwd() + path.sep + path.dirname(m.matchedPath || "");
-  const cmd = `git log --merges --format='${mergeFormat}' --ancestry-path ${commit}..main | grep 'pull request' | head -n1`;
+  const cmd = `git log --merges --format='${mergeFormat}' --ancestry-path ${commit}..main | grep 'pull request' | tail -n1`;
   const mergeLog = await execa(cmd, { cwd, shell: true });
   const [
     rev,
