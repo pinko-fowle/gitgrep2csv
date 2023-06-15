@@ -3,7 +3,7 @@ import isMain from "is-main";
 import { pipe } from "it-pipe";
 
 import config, { processConfig } from "./config.js";
-import { csv, csvHeaders } from "./csv.js";
+import { csv, md } from "./csv.js";
 import { gitBlame, gitHead, gitProject, githubPr } from "./git.js";
 import group from "./group.js";
 import { lines, tabsToSpaces } from "./lines.js";
@@ -40,9 +40,7 @@ export function grepMain(c: Config = config(process.argv, { process })) {
     gitHead(),
     githubPr,
     unpartial<Match>,
-    csv(c),
-    csvHeaders(c)
-    //replace(/\r?\n/g, "\\n")
+    (c.markdown ? md : csv)(c),
   );
 }
 
@@ -57,9 +55,7 @@ export function semgrepMain(c: Config = config(process.argv, { process })) {
     gitHead(),
     githubPr,
     unpartial<Match>,
-    csv(c),
-    csvHeaders(c)
-    //replace(/\r?\n/g, "\\n")
+    (c.markdown ? md : csv)(c),
   );
 }
 
