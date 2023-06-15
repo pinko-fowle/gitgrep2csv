@@ -92,11 +92,11 @@ const extractCsv = (c: Config) => (m: Match) => {
     makeString(
       m.merges,
       (c: GitMerge) =>
-        `https://github.com/socialtables/${m.project}/pulls/${c.pr}`
+        `https://github.com/socialtables/${m.project}/pull/${c.pr}`
     ),
 
     //m.merge &&
-    //  `[\`#${m.merge?.pr}\`](https://github.com/socialtables/${m.project}/pulls/${m.merge?.pr})`,
+    //  `[\`#${m.merge?.pr}\`](https://github.com/socialtables/${m.project}/pull/${m.merge?.pr})`,
     m.text,
   ];
   return output;
@@ -127,7 +127,7 @@ const extractMarkdown = (c: Config) => (m: Match) => {
       const shortRev = c.rev.substring(0, 8);
       return `${toDate(c.authorTime)} [#${
         c.pr
-      }](https://github.com/socialtables/${m.project}/pulls/${c.pr}) ${
+      }](https://github.com/socialtables/${m.project}/pull/${c.pr}) ${
         c.branch
       }\n`;
     }),
